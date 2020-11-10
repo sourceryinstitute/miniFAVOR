@@ -27,6 +27,12 @@
 		<Filter Name="Header Files" Filter="fi;fd"/>
 		<Filter Name="Resource Files" Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe"/>
 		<Filter Name="Source Files" Filter="f90;for;f;fpp;ftn;def;odl;idl">
-		<File RelativePath=".\miniFAVOR.f90"/></Filter>
+		<File RelativePath=".\Calc_cpi.f90"/>
+		<File RelativePath=".\Calc_K.f90"/>
+		<File RelativePath=".\Calc_RTndt.f90"/>
+		<File RelativePath=".\Commons.f90"/>
+		<File RelativePath=".\miniFAVOR.f90"/>
+		<File RelativePath=".\I_O.f90"/>
+		<File RelativePath=".\Utils.f90"/></Filter>
 		<File RelativePath=".\ReadMe.txt"/></Files>
 	<Globals/></VisualStudioProject>
