@@ -1,12 +1,16 @@
 # Prerequisites
 *.d
+*.suo
+*.snl
+*.u2d
+*.vfproj
 
 # Compiled Object files
 *.slo
 *.lo
 *.o
 *.obj
-*.suo
+*.manifest
 
 # Precompiled Headers
 *.gch
