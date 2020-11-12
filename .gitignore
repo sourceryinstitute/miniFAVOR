@@ -43,3 +43,13 @@ miniFAVOR/.vs/miniFAVOR/v16/.suo
 *.htm
 *.pdb
 *.pdb
+*.opendb
+*.db-shm
+*.db-wal
+*.db
+miniFAVOR/.vs/miniFAVOR/v16/.suo
+*.xlsx
+*.in
+*.pdb
+*.vfproj
+*.pdb
