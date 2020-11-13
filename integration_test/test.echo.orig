@@ -2,7 +2,7 @@
        Vessel Thickness:      8.750 in
   Number of Simulations:        100
    Number of Time Steps:        401
-        Detailed output:         -1
+        Detailed output:         T
          Copper Content:      0.213 %
          Nickel Content:      1.020 %
    Copper Content STDEV:      0.167 %
