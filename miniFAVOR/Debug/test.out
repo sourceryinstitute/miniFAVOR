@@ -1,0 +1,16 @@
+MiniFAVOR Output Summary
+/Key inputs/
+            Crack Depth:      2.188 in
+       Vessel Thickness:      8.750 in
+  Number of Simulations:        100
+         Copper Content:      0.213 %
+         Nickel Content:      1.020 %
+   Copper Content STDEV:      0.167 %
+   Nickel Content STDEV:      0.162 %
+     ID Surface Fluence:      3.809 n/cm^2
+     Unirradiated RTndt:    -56.000 degF
+/Results/
+              Final CPI:      0.735
+Minimum crack tip RTndt:    242.937 degF
+Maximum crack tip  RTndt:   437.022 degF
+Average crack tip RTndt:    323.231 degF

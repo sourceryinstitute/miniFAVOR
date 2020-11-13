@@ -34,7 +34,6 @@
 
 # Executables
 *.exe
-*.out
 *.app
 miniFAVOR/.vs/miniFAVOR/v16/.suo
 *.vfproj
@@ -49,11 +48,8 @@ miniFAVOR/.vs/miniFAVOR/v16/.suo
 *.db
 miniFAVOR/.vs/miniFAVOR/v16/.suo
 *.xlsx
-*.in
 *.pdb
 *.vfproj
 *.pdb
 miniFAVOR/.vs/miniFAVOR/v16/.suo
-*.dat
-*.echo
 *.pdb
