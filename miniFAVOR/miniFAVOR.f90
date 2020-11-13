@@ -86,4 +86,3 @@
     call write_OUT(fn_IN, n_OUT, n_DAT)
     
     end program miniFAVOR
-

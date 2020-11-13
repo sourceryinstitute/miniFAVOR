@@ -100,7 +100,6 @@ implicit none
         Cu_sig_local = Cu_bar + Cu_sig_star*sqrt(2.0)*erfc(2*u-1)
         call RANDOM_NUMBER(u)
         Cu_local = Cu_ave + Cu_sig_local*sqrt(2.0)*erfc(2*u-1)
-        !
             
         !Sample local nickel content based on weld nickel heat 34B009 & W5214 procedure
         call RANDOM_NUMBER(u)
