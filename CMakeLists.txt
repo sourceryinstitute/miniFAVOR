@@ -90,6 +90,13 @@ if(HAVE_ERROR_STOP_IN_PURE)
   add_definitions(-DHAVE_ERROR_STOP_IN_PURE)
 endif()
 
-foreach(directory app src)
+foreach(directory app src integration_test)
   add_subdirectory("${directory}")
 endforeach()
+
+enable_testing()
+
+add_test(NAME integration_test
+  COMMAND ${CMAKE_BINARY_DIR}/integration_test/run_test.sh
+  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/integration_test
+)
