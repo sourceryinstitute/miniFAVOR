@@ -28,6 +28,7 @@
     integer, parameter :: n_IN = 15
     integer, parameter :: n_ECHO = n_IN + 1
     integer, parameter :: n_OUT = n_IN + 2
+    integer, parameter :: n_DAT = n_IN + 3
     integer :: i, j
     
     ! Body of miniFAVOR
@@ -82,7 +83,7 @@
                 
     end do Vessel_loop
     
-    
+    call write_OUT(fn_IN, n_OUT, n_DAT)
     
     end program miniFAVOR
 

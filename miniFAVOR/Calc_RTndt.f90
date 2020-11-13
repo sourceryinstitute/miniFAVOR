@@ -59,16 +59,27 @@ implicit none
             
         !Bi-linear interpolation
         if (Cu <= 0.0 .or. Cu >= 0.40) then !only interpolate on nickel
-            CF = CF_weld(Cu_int,Ni_int) + &
+            select case (Ni_int)
+            case (7)
+                CF = CF_weld(Cu_int, Ni_int)
+            case default
+                CF = CF_weld(Cu_int,Ni_int) + &
                 (Ni-0.2*(Ni_int-1))/0.2 * (CF_weld(Cu_int,Ni_int+1)-CF_weld(Cu_int,Ni_int))
+            end select
         else
-            !First, interpolte on copper
-            CF_1 = CF_weld(Cu_int,Ni_int) + &
+            !First, interpolate on copper
+            select case (Ni_int)
+            case (7)
+                CF = CF_weld(Cu_int, Ni_int) + &
                 (Cu-0.01*(Cu_int))/0.01 * (CF_weld(Cu_int+1,Ni_int)-CF_weld(Cu_int+1,Ni_int))
-            CF_1 = CF_weld(Cu_int,Ni_int+1) + &
-                (Cu-0.01*(Cu_int))/0.01 * (CF_weld(Cu_int+1,Ni_int+1)-CF_weld(Cu_int+1,Ni_int+1))
+            case default
+                CF_1 = CF_weld(Cu_int,Ni_int) + &
+                    (Cu-0.01*(Cu_int))/0.01 * (CF_weld(Cu_int+1,Ni_int)-CF_weld(Cu_int+1,Ni_int))
+                CF_2 = CF_weld(Cu_int,Ni_int+1) + &
+                    (Cu-0.01*(Cu_int))/0.01 * (CF_weld(Cu_int+1,Ni_int+1)-CF_weld(Cu_int+1,Ni_int+1))
             !Second, interpolate on nickel
             CF = CF_1 + (Ni-0.2*(Ni_int-1))/0.2 * (CF_2-CF_1)
+            end select
         end if
             
     end function CF

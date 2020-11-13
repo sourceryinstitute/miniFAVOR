@@ -2,6 +2,7 @@ module inputs_h
     implicit none
     real :: a, b
     integer :: nsim, ntime
+    logical :: details
     real, dimension(:), allocatable :: stress, temp
     real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
 end module inputs_h
