@@ -41,5 +41,9 @@ jobs:
 
     - name: Deploy documentationto gh-pages branch
       if: ${{ github.ref == 'refs/heads/ford-documentation'}}
-      command: gh-pages --dist doc/miniFAVOR-doc
-      
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        BRANCH: gh-pages
+        FOLDER: doc/miniFAVOR-doc
+        CLEAN: true
+
