@@ -17,7 +17,9 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        sudo apt install -y gfortran-${GCC_V} cmake numdiff
+        sudo apt install -y gfortran-${GCC_V} cmake numdiff wget python-dev python build-essential
+        wget -P . "https://bootstrap.pypa.io/get-pip.py" && sudo python get-pip.py && rm get-pip.py
+        sudo pip install ford
         sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
 
     - name: Build
@@ -31,3 +33,16 @@ jobs:
       run: |
         cd build
         ctest --output-on-failure
+
+    - name: miniFAVOR Documenation
+      run: |
+        cd doc
+        ford miniFAVOR-FORD-file.md
+
+    - name: Save HTML Documentation
+      if: ${{ github.ref == 'refs/heads/ford-documentation'}}
+      uses: actions/upload-artifact@v2
+      with:
+        name: documentation
+        path: doc/miniFAVOR-doc
+        if-no-files-found: error
