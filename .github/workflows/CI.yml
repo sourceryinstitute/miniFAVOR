@@ -39,10 +39,7 @@ jobs:
         cd doc
         ford miniFAVOR-FORD-file.md
 
-    - name: Save HTML Documentation
-      if: ${{ github.ref == 'refs/heads/main'}}
-      uses: actions/upload-artifact@v2
-      with:
-        name: documentation
-        path: doc/miniFAVOR-doc
-        if-no-files-found: error
+    - name: Deploy documentationto gh-pages branch
+      if: ${{ github.ref == 'refs/heads/ford-documentation'}}
+      command: gh-pages --dist doc/miniFAVOR-doc
+      
