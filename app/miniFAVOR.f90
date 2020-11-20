@@ -86,6 +86,8 @@
 
     end do Vessel_loop
 
-    call write_OUT(fn_IN, n_OUT, n_DAT)
+    call write_OUT(fn_IN, n_OUT, n_DAT, &
+        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
+        CPI_results, K_hist, Chemistry)
 
     end program miniFAVOR

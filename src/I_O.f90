@@ -4,7 +4,8 @@ implicit none
 
     contains
 
-    subroutine read_IN(fn_IN, n_IN, n_ECHO, a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
+    subroutine read_IN(fn_IN, n_IN, n_ECHO, &
+        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
         !Variables
         integer, intent(in) :: n_IN, n_ECHO
@@ -58,15 +59,18 @@ implicit none
 
     end subroutine read_IN
 
-    subroutine write_OUT(fn_IN, n_OUT, n_DAT)
-
-        use inputs_h, only: a, b, nsim, ntime, details, &
-            Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
-        use outputs_h
+    subroutine write_OUT(fn_IN, n_OUT, n_DAT, &
+        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
+        CPI_results, K_hist, Chemistry)
 
         !Variables
         character(len=64), intent(in) :: fn_IN
         integer, intent(in) :: n_OUT, n_DAT
+        real, intent(in) :: a, b, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
+        integer, intent(in) :: nsim, ntime
+        logical, intent(in) :: details
+        real, intent(in) :: CPI_results(:,:), K_hist(:), Chemistry(:,:)
+
         character(len=64) :: fn_OUT, fn_DAT
         integer :: i
 
