@@ -21,6 +21,7 @@ jobs:
         wget -P . "https://bootstrap.pypa.io/get-pip.py" && sudo python get-pip.py && rm get-pip.py
         sudo pip install ford
         sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
+        sudo apt install nodejs
 
     - name: Build
       run: |
@@ -40,10 +41,8 @@ jobs:
         ford miniFAVOR-FORD-file.md
 
     - name: Deploy documentationto gh-pages branch
-      if: ${{ github.ref == 'refs/heads/ford-documentation'}}
-      uses: JamesIves/github-pages-deploy-action@3.7.1
-      with:
-        BRANCH: gh-pages
-        FOLDER: doc/miniFAVOR-doc
-        CLEAN: true
+      if: ${{  github.event_name == 'push' && github.ref == 'refs/heads/ford-documentation'}}
+      run: |
+        npm install -g --silent gh-pages@2.0.1 
+      command: gh-pages --dist doc/miniFAVOR-doc
 
