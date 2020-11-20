@@ -4,7 +4,6 @@ summary: Proxy Application miniFAVOR
 src_dir: ../app
 exclude_dir: ../doc/miniFAVOR-doc
 output_dir: ../doc/miniFAVOR-doc
-page_dir: ../doc/page
 preprocess: true
 macro: FORD
 preprocessor: gfortran -E
