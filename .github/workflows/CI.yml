@@ -20,9 +20,10 @@ jobs:
         sudo apt install -y gfortran-${GCC_V} cmake numdiff wget python-dev python build-essential
         wget -P . "https://bootstrap.pypa.io/get-pip.py" && sudo python get-pip.py && rm get-pip.py
         sudo pip install ford
+        sudo apt install -y nodejs
+        sudo npm install -g --silent gh-pages@2.0.1 
         sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
-        sudo apt install nodejs
-
+        
     - name: Build
       run: |
         mkdir build
@@ -43,6 +44,5 @@ jobs:
     - name: Deploy documentationto gh-pages branch
       if: ${{  github.event_name == 'push' && github.ref == 'refs/heads/ford-documentation'}}
       run: |
-        npm install -g --silent gh-pages@2.0.1 
         gh-pages --dist doc/miniFAVOR-doc
 
