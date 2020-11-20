@@ -1,0 +1,33 @@
+name: CI
+
+on: [push, pull_request]
+
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+
+    env:
+      FC: gfortran
+      GCC_V: 10
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v1
+
+    - name: Install Dependencies
+      run: |
+        sudo apt install -y gfortran-${GCC_V} cmake numdiff
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
+
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        cmake ..
+        make -j $(nproc)
+
+    - name: Run tests
+      run: |
+        cd build
+        ctest --output-on-failure

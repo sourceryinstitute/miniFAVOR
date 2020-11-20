@@ -31,7 +31,7 @@ implicit none
         
         !Read in and echo type of output to be written
         read (n_IN, *) details
-        write (n_ECHO, '(a25,i10)') 'Detailed output: ', details
+        write (n_ECHO, '(a25,l10)') 'Detailed output: ', details
             
         !Read and echo embrittlement inputs
         read (n_IN, *) Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
