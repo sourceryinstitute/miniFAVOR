@@ -40,11 +40,10 @@ jobs:
         ford miniFAVOR-FORD-file.md
 
     - name: Deploy documentationto gh-pages branch
-        if: success()
-        uses: crazy-max/ghaction-github-pages@v2
+        uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
-          target_branch: gh-pages
-          build_dir: doc/miniFAVOR-doc
-        env:
+          BRANCH: gh-pages
+          FOLDER: doc/miniFAVOR-doc
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CLEAN: true
 
