@@ -2,6 +2,7 @@
 project: miniFAVOR
 summary: Proxy Application miniFAVOR 
 src_dir: ../app
+         ../src
 exclude_dir: ../doc/miniFAVOR-doc
 output_dir: ../doc/miniFAVOR-doc
 preprocess: true
@@ -70,5 +71,5 @@ If you encounter a problem, have a suggestion, or want to ask a question,
 we encourage you to post an issue in [this projects Github repository] by
 [opening a new issue]. 
 
-[this projects Gitlab repository]: https://github.com/everythingfunctional/miniFAVOR
+[this projects Github repository]: https://github.com/everythingfunctional/miniFAVOR
 [opening a new issue]: https://github.com/everythingfunctional/miniFAVOR/issues/new
