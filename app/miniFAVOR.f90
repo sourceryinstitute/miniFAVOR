@@ -18,6 +18,7 @@
     use calc_RTndt
     use calc_K
     use calc_cpi
+    use randomness_m, only: random_samples_t, get_samples
 
     implicit none
 
@@ -28,6 +29,7 @@
     integer, parameter :: n_OUT = n_IN + 2
     integer, parameter :: n_DAT = n_IN + 3
     integer :: i, j, num_seeds
+    type(random_samples_t), allocatable :: samples(:)
 
     ! Inputs
     real :: a, b
@@ -60,6 +62,7 @@
     allocate(Chemistry(nsim,3))
     allocate(cpi_hist(nsim, ntime))
     allocate(CPI_results(nsim,3))
+    allocate(samples(nsim))
 
     !Initialize output arrays
     K_hist =  0.0
@@ -72,17 +75,23 @@
         K_hist(j) = Ki_t(a, b, stress(j))
     end do SIF_loop
 
+    ! This cannot be parallelized or reordered without the results changing
+    do i = 1, nsim
+      samples(i) = get_samples()
+    end do
+
     !Start looping over number of simulations
     Vessel_loop: do i = 1, nsim
 
         !Sample chemistry: Chemistry(i,1) is Cu content, Chemistry(i,2) is Ni content
-        call sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Chemistry(i,1), Chemistry(i,2))
+        call sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Chemistry(i,1), Chemistry(i,2), &
+            samples(i)%Cu_sig_local, samples(i)%Cu_local, samples(i)%Ni_local)
 
         !Calculate chemistry factor: Chemistry(i,3) is chemistry factor
         Chemistry(i,3) = CF(Chemistry(i,1), Chemistry(i,2))
 
         !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-        CPI_results(i,1) = RTndt(a, Chemistry(i,3), fsurf, RTndt0)
+        CPI_results(i,1) = RTndt(a, Chemistry(i,3), fsurf, RTndt0, samples(i)%phi)
 
         !Start time loop
         Time_loop: do j = 1, ntime
