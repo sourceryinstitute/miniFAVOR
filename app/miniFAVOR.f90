@@ -41,7 +41,7 @@
     read (*,'(a)') fn_IN
 
     !Read input file
-    call read_IN(fn_IN, n_IN, n_ECHO)
+    call read_IN(fn_IN, n_IN, n_ECHO, a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
     !Allocate output arrays
     allocate(K_hist(ntime))
