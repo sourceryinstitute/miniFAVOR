@@ -22,9 +22,9 @@ extra_mods: iso_fortran_env:https://gcc.gnu.org/onlinedocs/gfortran/ISO_005fFORT
 lower: true
 print_creation_date: true
 creation_date: %Y-%m-%d %H:%M %z
-project_github: https://github.com/everythingfunctional/miniFAVOR
-project_download: hhttps://github.com/everythingfunctional/miniFAVOR
-github: https://github.com/everythingfunctional/miniFAVOR
+project_github: https://github.com/sourceryinstitute/miniFAVOR
+project_download: https://github.com/sourceryinstitute/miniFAVOR
+github: https://github.com/sourceryinstitute/miniFAVOR
 
 ---
 
@@ -71,5 +71,5 @@ If you encounter a problem, have a suggestion, or want to ask a question,
 we encourage you to post an issue in [this projects Github repository] by
 [opening a new issue]. 
 
-[this projects Github repository]: https://github.com/everythingfunctional/miniFAVOR
-[opening a new issue]: https://github.com/everythingfunctional/miniFAVOR/issues/new
+[this projects Github repository]: https://github.com/sourceryinstitute/miniFAVOR
+[opening a new issue]: https://github.com/sourceryinstitute/miniFAVOR/issues/new
