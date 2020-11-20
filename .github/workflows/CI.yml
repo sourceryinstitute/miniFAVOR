@@ -44,5 +44,5 @@ jobs:
       if: ${{  github.event_name == 'push' && github.ref == 'refs/heads/ford-documentation'}}
       run: |
         npm install -g --silent gh-pages@2.0.1 
-      command: gh-pages --dist doc/miniFAVOR-doc
+        gh-pages --dist doc/miniFAVOR-doc
 
