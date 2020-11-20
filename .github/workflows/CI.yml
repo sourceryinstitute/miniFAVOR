@@ -40,7 +40,7 @@ jobs:
         ford miniFAVOR-FORD-file.md
 
     - name: Save HTML Documentation
-      if: ${{ github.ref == 'refs/heads/ford-documentation'}}
+      if: ${{ github.ref == 'refs/heads/main'}}
       uses: actions/upload-artifact@v2
       with:
         name: documentation
