@@ -39,7 +39,7 @@ jobs:
         cd doc
         ford miniFAVOR-FORD-file.md
 
-    - name: Deploy documentationto gh-pages branch
+    - name: Deploy documentation to gh-pages branch
       uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
         BRANCH: gh-pages
