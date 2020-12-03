@@ -18,7 +18,7 @@
     use calc_RTndt
     use calc_K
     use calc_cpi
-    use randomness_m, only: random_samples_t, get_samples
+    use randomness_m, only: random_samples_t
 
     implicit none
 
@@ -77,7 +77,7 @@
 
     ! This cannot be parallelized or reordered without the results changing
     do i = 1, nsim
-      samples(i) = get_samples()
+      call samples(i)%define()
     end do
 
     !Start looping over number of simulations

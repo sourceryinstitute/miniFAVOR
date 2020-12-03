@@ -5,4 +5,5 @@ add_library(minifav
   Commons.f90
   I_O.f90
   randomness_m.f90
+  randomness_s.f90
 )
