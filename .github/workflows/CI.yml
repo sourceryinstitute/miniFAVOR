@@ -21,7 +21,7 @@ jobs:
         wget -P . "https://bootstrap.pypa.io/get-pip.py" && sudo python get-pip.py && rm get-pip.py
         sudo pip install ford
         sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
-        
+
     - name: Build
       run: |
         mkdir build
@@ -39,11 +39,10 @@ jobs:
         cd doc
         ford miniFAVOR-FORD-file.md
 
-    - name: Deploy documentationto gh-pages branch
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          BRANCH: gh-pages
-          FOLDER: doc/miniFAVOR-doc
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CLEAN: true
-
+    - name: Deploy documentation to gh-pages branch
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        BRANCH: gh-pages
+        FOLDER: doc/miniFAVOR-doc
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CLEAN: true
