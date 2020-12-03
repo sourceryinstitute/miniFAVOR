@@ -1,12 +1,3 @@
-module inputs_h
-    implicit none
-    real :: a, b
-    integer :: nsim, ntime
-    logical :: details
-    real, dimension(:), allocatable :: stress, temp
-    real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
-end module inputs_h
-
 module constants_h
     implicit none
     real, parameter :: Pi = 4.D0*DATAN(1.D0)
@@ -47,11 +38,3 @@ module constants_h
         290, 293, 296, 299, 302, 305, 308, 311, 314, 317, &
         320 /), [41, 7])
 end module constants_h
-
-module outputs_h
-    implicit none
-    real, dimension(:), allocatable :: K_hist
-    real, dimension(:,:), allocatable :: Chemistry
-    real, dimension(:,:), allocatable :: cpi_hist
-    real, dimension(:,:), allocatable :: CPI_results
-end module outputs_h

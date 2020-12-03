@@ -15,8 +15,6 @@
     program miniFAVOR
 
     use I_O
-    use inputs_h
-    use outputs_h
     use calc_RTndt
     use calc_K
     use calc_cpi
@@ -31,6 +29,19 @@
     integer, parameter :: n_DAT = n_IN + 3
     integer :: i, j, num_seeds
 
+    ! Inputs
+    real :: a, b
+    integer :: nsim, ntime
+    logical :: details
+    real, dimension(:), allocatable :: stress, temp
+    real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
+
+    ! Outputs
+    real, dimension(:), allocatable :: K_hist
+    real, dimension(:,:), allocatable :: Chemistry
+    real, dimension(:,:), allocatable :: cpi_hist
+    real, dimension(:,:), allocatable :: CPI_results
+
     ! Body of miniFAVOR
 
     !Get input file name
@@ -41,7 +52,8 @@
     read (*,'(a)') fn_IN
 
     !Read input file
-    call read_IN(fn_IN, n_IN, n_ECHO)
+    call read_IN(fn_IN, n_IN, n_ECHO, &
+        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
     !Allocate output arrays
     allocate(K_hist(ntime))
@@ -86,6 +98,8 @@
 
     end do Vessel_loop
 
-    call write_OUT(fn_IN, n_OUT, n_DAT)
+    call write_OUT(fn_IN, n_OUT, n_DAT, &
+        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
+        CPI_results, K_hist, Chemistry)
 
     end program miniFAVOR
