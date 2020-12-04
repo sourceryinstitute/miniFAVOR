@@ -42,11 +42,11 @@ ctest -v
 ```
 Please report any test failures by submitting a [new issue].
 
+The [developer documentation] is published via GitHub Pages.
 
 [Hyperlinks]:#
 [`gfortran`]: https://gcc.gnu.org
 [`cmake`]: https://www.cmake.org
 [`ford`]: https://github.com/Fortran-FOSS-Programmers/ford
 [new issue]: https://github.com/everythingfunctional/miniFAVOR/issues/new
-
-
+[developer documentation]: https://sourceryinstitute.github.io/miniFAVOR/
