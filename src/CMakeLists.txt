@@ -7,3 +7,4 @@ add_library(minifav
   randomness_m.f90
   randomness_s.f90
 )
+add_subdirectory(git-submodules)
