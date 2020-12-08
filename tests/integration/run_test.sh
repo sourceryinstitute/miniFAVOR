@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 set -ex
 
 rm -f test.dat test.echo test.out
-../app/miniFAVOR << EOF
+@CMAKE_BINARY_DIR@/app/miniFAVOR << EOF
 test.in
 EOF
 diff -b test.echo.orig test.echo
