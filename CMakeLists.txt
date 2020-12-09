@@ -86,3 +86,7 @@ add_test(NAME integration_test
   COMMAND ${CMAKE_BINARY_DIR}/tests/integration/run_test.sh
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/integration
 )
+
+add_test(NAME unit_tests
+  COMMAND ${CMAKE_BINARY_DIR}/tests/unit/unit_tests
+)
