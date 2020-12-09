@@ -10,3 +10,6 @@
 [submodule "src/git-submodules/parff"]
 	path = src/git-submodules/parff
 	url = https://gitlab.com/everythingfunctional/parff
+[submodule "src/git-submodules/sourcery"]
+	path = src/git-submodules/sourcery
+	url = https://github.com/sourceryinstitute/sourcery
