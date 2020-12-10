@@ -4,8 +4,8 @@ add_library(minifav
   Calc_RTndt.f90
   Commons.f90
   I_O.f90
-  randomness_m.f90
-  randomness_s.f90
+  random_samples_m.f90
+  random_samples_s.f90
 )
 target_link_libraries(minifav
   PRIVATE sourcery
