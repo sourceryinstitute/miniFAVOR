@@ -58,22 +58,18 @@
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
     !Allocate output arrays
-    allocate(K_hist(ntime))
     allocate(Chemistry(nsim,3))
     allocate(cpi_hist(nsim, ntime))
     allocate(CPI_results(nsim,3))
     allocate(samples(nsim))
 
     !Initialize output arrays
-    K_hist =  0.0
     Chemistry = 0.0
     cpi_hist = 0.0
     CPI_results = 0.0
 
     !Calculate applied stress intensity factor (SIF)
-    SIF_loop: do j = 1, ntime
-        K_hist(j) = Ki_t(a, b, stress(j))
-    end do SIF_loop
+    K_hist = Ki_t(a, b, stress)
 
     ! This cannot be parallelized or reordered without the results changing
     do i = 1, nsim
