@@ -34,3 +34,20 @@ target_link_libraries(make_vegetables_driver
   PRIVATE strff
   PRIVATE iso_varying_string
 )
+
+add_library(sourcery
+  sourcery/src/array_functions_implementation.f90
+  sourcery/src/array_functions_interface.f90
+  sourcery/src/assertions_implementation.F90
+  sourcery/src/assertions_interface.F90
+  sourcery/src/co_object_implementation.f90
+  sourcery/src/co_object_interface.f90
+  sourcery/src/data-partition-implementation.F90
+  sourcery/src/data-partition-interface.f90
+  sourcery/src/emulated_intrinsics_implementation.F90
+  sourcery/src/emulated_intrinsics_interface.F90
+  sourcery/src/object_implementation.f90
+  sourcery/src/object_interface.f90
+  sourcery/src/string_functions_implementation.f90
+  sourcery/src/string_functions_interface.f90
+)

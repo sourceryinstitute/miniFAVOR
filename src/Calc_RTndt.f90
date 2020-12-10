@@ -1,4 +1,5 @@
 module calc_RTndt
+  use assertions_interface, only : assert
 
 implicit none
 
@@ -85,23 +86,26 @@ implicit none
 
     !This subroutine samples the copper and nickel contents based on the nominal value
     !and the standard deviation
-    subroutine sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Cu_local, Ni_local, &
-          Cu_sig_local_sample, Cu_local_sample, Ni_local_sample)
+    subroutine sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Cu_local, Ni_local, samples)
+        use randomness_m, only : random_samples_t
 
         !Variables
+        type(random_samples_t), intent(in) :: samples
         real, intent(in) :: Cu_ave, Ni_ave, Cu_sig, Ni_sig
         real, intent(out) :: Cu_local, Ni_local
-        real, intent(in) :: Cu_sig_local_sample, Cu_local_sample, Ni_local_sample
         real :: Cu_bar, Cu_sig_star, Cu_sig_local
+
+        ! Requires
+        call assert(samples%user_defined(), "random_samples_t%sample_chem: samples%user_defined()")
 
         !Sample local copper content based on weld copper sampling procedure
         Cu_bar = Cu_ave * Cu_sig
         Cu_sig_star = min(0.0718*Cu_ave, 0.0185)
-        Cu_sig_local = Cu_bar + Cu_sig_star*sqrt(2.0)*erfc(2*Cu_sig_local_sample-1)
-        Cu_local = Cu_ave + Cu_sig_local*sqrt(2.0)*erfc(2*Cu_local_sample-1)
+        Cu_sig_local = Cu_bar + Cu_sig_star*sqrt(2.0)*erfc(2*samples%Cu_sig_local()-1)
+        Cu_local = Cu_ave + Cu_sig_local*sqrt(2.0)*erfc(2*samples%Cu_local()-1)
 
         !Sample local nickel content based on weld nickel heat 34B009 & W5214 procedure
-        Ni_local = Ni_ave + Ni_sig*sqrt(2.0)*erfc(2*Ni_local_sample-1)
+        Ni_local = Ni_ave + Ni_sig*sqrt(2.0)*erfc(2*samples%Ni_local()-1)
 
     end subroutine sample_chem
 

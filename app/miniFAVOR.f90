@@ -84,14 +84,13 @@
     Vessel_loop: do i = 1, nsim
 
         !Sample chemistry: Chemistry(i,1) is Cu content, Chemistry(i,2) is Ni content
-        call sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Chemistry(i,1), Chemistry(i,2), &
-            samples(i)%Cu_sig_local, samples(i)%Cu_local, samples(i)%Ni_local)
+        call sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Chemistry(i,1), Chemistry(i,2), samples(i))
 
         !Calculate chemistry factor: Chemistry(i,3) is chemistry factor
         Chemistry(i,3) = CF(Chemistry(i,1), Chemistry(i,2))
 
         !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-        CPI_results(i,1) = RTndt(a, Chemistry(i,3), fsurf, RTndt0, samples(i)%phi)
+        CPI_results(i,1) = RTndt(a, Chemistry(i,3), fsurf, RTndt0, samples(i)%phi())
 
         !Start time loop
         Time_loop: do j = 1, ntime
