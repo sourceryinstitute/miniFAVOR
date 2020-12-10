@@ -63,11 +63,6 @@
     allocate(CPI_results(nsim,3))
     allocate(samples(nsim))
 
-    !Initialize output arrays
-    Chemistry = 0.0
-    cpi_hist = 0.0
-    CPI_results = 0.0
-
     !Calculate applied stress intensity factor (SIF)
     K_hist = Ki_t(a, b, stress)
 
@@ -98,7 +93,7 @@
         CPI_results(i,2) = maxval(cpi_hist(i,:))
 
         !Calculate moving average CPI for trials executed so far
-        CPI_results(i,3) = sum(CPI_results(:,2))/i
+        CPI_results(i,3) = sum(CPI_results(1:i,2))/i
 
     end do Vessel_loop
 
