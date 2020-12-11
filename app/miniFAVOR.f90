@@ -14,10 +14,10 @@
 
     program miniFAVOR
 
-    use I_O
-    use calc_RTndt
-    use calc_K
-    use calc_cpi
+    use I_O, only : read_In, write_Out
+    use calc_RTndt, only : RTndt, CF, sample_chem
+    use calc_K, only : Ki_t
+    use calc_cpi, only : cpi_t
     use randomness_m, only: random_samples_t
 
     implicit none
