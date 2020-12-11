@@ -14,10 +14,10 @@
 
     program miniFAVOR
 
-    use I_O
-    use calc_RTndt
-    use calc_K
-    use calc_cpi
+    use I_O, only : read_In, write_Out
+    use calc_RTndt, only : RTndt, CF, sample_chem
+    use calc_K, only : Ki_t
+    use calc_cpi, only : cpi_t
     use randomness_m, only: random_samples_t
 
     implicit none
@@ -39,10 +39,14 @@
     real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
 
     ! Outputs
-    real, dimension(:), allocatable :: K_hist
-    real, dimension(:,:), allocatable :: Chemistry
+    real, allocatable :: K_hist(:)
+    real, allocatable :: Chemistry_factor(:)
+    real, allocatable :: R_Tndt(:)
+    real, allocatable :: CPI(:)
+    real, allocatable :: CPI_avg(:)
+    real, dimension(:,:), allocatable :: Chemistry_content
     real, dimension(:,:), allocatable :: cpi_hist
-    real, dimension(:,:), allocatable :: CPI_results
+    integer, parameter :: nmaterials=2
 
     ! Body of miniFAVOR
 
@@ -58,22 +62,13 @@
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
     !Allocate output arrays
-    allocate(K_hist(ntime))
-    allocate(Chemistry(nsim,3))
+    allocate(Chemistry_content(nsim, nmaterials))
+    allocate(Chemistry_factor(nsim))
     allocate(cpi_hist(nsim, ntime))
-    allocate(CPI_results(nsim,3))
-    allocate(samples(nsim))
-
-    !Initialize output arrays
-    K_hist =  0.0
-    Chemistry = 0.0
-    cpi_hist = 0.0
-    CPI_results = 0.0
+    allocate(R_Tndt(nsim), CPI(nsim), CPI_avg(nsim), samples(nsim))
 
     !Calculate applied stress intensity factor (SIF)
-    SIF_loop: do j = 1, ntime
-        K_hist(j) = Ki_t(a, b, stress(j))
-    end do SIF_loop
+    K_hist = Ki_t(a, b, stress)
 
     ! This cannot be parallelized or reordered without the results changing
     do i = 1, nsim
@@ -83,31 +78,31 @@
     !Start looping over number of simulations
     Vessel_loop: do i = 1, nsim
 
-        !Sample chemistry: Chemistry(i,1) is Cu content, Chemistry(i,2) is Ni content
-        call sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Chemistry(i,1), Chemistry(i,2), samples(i))
+        !Sample chemistry: Chemistry_content(i,1) is Cu content, Chemistry_content(i,2) is Ni content
+        call sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Chemistry_content(i,1), Chemistry_content(i,2), samples(i))
 
-        !Calculate chemistry factor: Chemistry(i,3) is chemistry factor
-        Chemistry(i,3) = CF(Chemistry(i,1), Chemistry(i,2))
+        !Calculate chemistry factor: Chemistry_factor(i) is chemistry factor
+        Chemistry_factor(i) = CF(Chemistry_content(i,1), Chemistry_content(i,2))
 
         !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-        CPI_results(i,1) = RTndt(a, Chemistry(i,3), fsurf, RTndt0, samples(i)%phi())
+        R_Tndt(i) = RTndt(a, Chemistry_factor(i), fsurf, RTndt0, samples(i)%phi())
 
         !Start time loop
         Time_loop: do j = 1, ntime
             !Calculate instantaneous cpi(t)
-            cpi_hist(i,j) = cpi_t(K_hist(j), CPI_results(i,1), temp(j))
+            cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
         end do Time_loop
 
         !Calculate CPI for vessel 'i'
-        CPI_results(i,2) = maxval(cpi_hist(i,:))
+        CPI(i) = maxval(cpi_hist(i,:))
 
         !Calculate moving average CPI for trials executed so far
-        CPI_results(i,3) = sum(CPI_results(:,2))/i
+        CPI_avg(i) = sum(CPI(1:i))/i
 
     end do Vessel_loop
 
     call write_OUT(fn_IN, n_OUT, n_DAT, &
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
-        CPI_results, K_hist, Chemistry)
+        R_Tndt, CPI, CPI_avg, K_hist, Chemistry_content, Chemistry_factor)
 
     end program miniFAVOR

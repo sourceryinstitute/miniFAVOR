@@ -61,7 +61,7 @@ implicit none
 
     subroutine write_OUT(fn_IN, n_OUT, n_DAT, &
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
-        CPI_results, K_hist, Chemistry)
+        R_Tndt, CPI, CPI_avg, K_hist, Chemistry_content, Chemistry_factor)
 
         !Variables
         character(len=64), intent(in) :: fn_IN
@@ -69,7 +69,10 @@ implicit none
         real, intent(in) :: a, b, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
         integer, intent(in) :: nsim, ntime
         logical, intent(in) :: details
-        real, intent(in) :: CPI_results(:,:), K_hist(:), Chemistry(:,:)
+        real, intent(in) :: K_hist(:), Chemistry_content(:,:), Chemistry_factor(:)
+        real, intent(in) :: R_Tndt(:)
+        real, intent(in) :: CPI(:)
+        real, intent(in) :: CPI_avg(:)
 
         character(len=64) :: fn_OUT, fn_DAT
         integer :: i
@@ -91,13 +94,13 @@ implicit none
         write (n_OUT, '(a25,f10.3,a)') 'ID Surface Fluence: ', fsurf, ' n/cm^2'
         write (n_OUT, '(a25,f10.3,a)') 'Unirradiated RTndt: ', RTndt0, ' degF'
         write (n_OUT, '(a)') '/Results/'
-        write (n_OUT, '(a25,f10.3)') 'Final CPI: ', CPI_results(nsim,3)
+        write (n_OUT, '(a25,f10.3)') 'Final CPI: ', CPI_avg(nsim)
         write (n_OUT, '(a25,f10.3,a)') 'Minimum crack tip RTndt: ', &
-            minval(CPI_results(:,1)), ' degF'
+            minval(R_Tndt), ' degF'
         write (n_OUT, '(a25,f10.3,a)') 'Maximum crack tip  RTndt: ', &
-            maxval(CPI_results(:,1)), ' degF'
+            maxval(R_Tndt), ' degF'
         write (n_OUT, '(a25,f10.3,a)') 'Average crack tip RTndt: ', &
-            sum(CPI_results(:,1))/nsim, ' degF'
+            sum(R_Tndt)/nsim, ' degF'
 
         !Write out detailed output to data file
         if (details) then
@@ -111,12 +114,12 @@ implicit none
             write (n_DAT, '(a)') '/Chemistry Results'
             write (n_DAT, '(a)') 'Cu content (%),  Ni Content (%), Chemistry Factor CF'
             write_chem: do  i = 1, nsim
-                write (n_DAT, '(3f10.3)') Chemistry(i,1), Chemistry(i,2), Chemistry(i,3)
+                write (n_DAT, '(3f10.3)') Chemistry_content(i,1), Chemistry_content(i,2), Chemistry_factor(i)
             end do write_chem
             write (n_DAT, '(a)') '/Vessel CPI data'
             write (n_DAT, '(a)') 'Vessel RTndt (degF),  Vessel CPI, Cumulative Average CPI'
             write_CPI: do  i = 1, nsim
-                write (n_DAT, '(3f10.3)') CPI_results(i,1), CPI_results(i,2), CPI_results(i,3)
+                write (n_DAT, '(3f10.3)') R_Tndt(i), CPI(i), CPI_avg(i)
             end do write_CPI
         end if
 
