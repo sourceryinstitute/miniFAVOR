@@ -28,7 +28,7 @@
     integer, parameter :: n_ECHO = n_IN + 1
     integer, parameter :: n_OUT = n_IN + 2
     integer, parameter :: n_DAT = n_IN + 3
-    integer :: i, j, num_seeds
+    integer :: i, j
     type(random_samples_t), allocatable :: samples(:)
 
     ! Inputs
@@ -51,9 +51,6 @@
     ! Body of miniFAVOR
 
     !Get input file name
-    call random_seed(size=num_seeds)
-    call random_seed(put=[(i, i=1, num_seeds)])
-
     print *, 'Input file name:'
     read (*,'(a)') fn_IN
 

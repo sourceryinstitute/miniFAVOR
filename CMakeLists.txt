@@ -76,6 +76,19 @@ if(HAVE_ERROR_STOP_IN_PURE)
   add_definitions(-DHAVE_ERROR_STOP_IN_PURE)
 endif()
 
+check_fortran_source_compiles("
+  program main
+  integer i
+  call co_sum(i)
+  end program
+"
+  HAVE_COLLECTIVE_SUBROUTINES
+  SRC_EXT ".f90"
+  )
+if(NOT HAVE_COLLECTIVE_SUBROUTINES)
+  add_definitions(-DCOMPILER_LACKS_COLLECTIVE_SUBROUTINES)
+endif()
+
 foreach(directory app src tests)
   add_subdirectory("${directory}")
 endforeach()
