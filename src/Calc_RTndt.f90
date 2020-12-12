@@ -6,7 +6,7 @@ implicit none
     contains
 
     !RTndt_x calculation
-    function RTndt(a, CF, fsurf, RTndt0, phi)
+    pure function RTndt(a, CF, fsurf, RTndt0, phi)
 
         !Variables
         real :: RTndt, D_RTepi, D_RTndt, f
@@ -25,7 +25,7 @@ implicit none
     end function RTndt
 
     !This function calculates the weld chemistry factor given the copper and nickel contents
-    function CF(Cu, Ni)
+    pure function CF(Cu, Ni)
 
         use constants_h, only: CF_weld
 

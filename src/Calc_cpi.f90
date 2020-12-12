@@ -5,7 +5,7 @@ implicit none
     contains
         
     !Function to calculate cpi(t)
-    function cpi_t(K, RTndt, T)
+    pure function cpi_t(K, RTndt, T)
             
         !Variables
         real :: cpi_t
