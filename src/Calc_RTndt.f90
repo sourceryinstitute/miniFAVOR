@@ -31,7 +31,6 @@ implicit none
         !Variables
         real :: CF
         real, intent(in) :: Cu, Ni
-        real :: CF_1, CF_2
 
         ! Calculate interpolation coefficients for copper/nickel percentages:
         ! Truncate copper/nickel percentages to ranges [0%, 0.40%] and [0%, 1.2%], respectively.
@@ -56,12 +55,13 @@ implicit none
                   CF = CF_weld(Cu_int, Ni_int) + &
                   (Cu-0.01*(Cu_int))/0.01 * (CF_weld(Cu_int+1,Ni_int)-CF_weld(Cu_int+1,Ni_int))
               case default
-                  CF_1 = CF_weld(Cu_int,Ni_int) + &
-                      (Cu-0.01*(Cu_int))/0.01 * (CF_weld(Cu_int+1,Ni_int)-CF_weld(Cu_int+1,Ni_int))
-                  CF_2 = CF_weld(Cu_int,Ni_int+1) + &
-                      (Cu-0.01*(Cu_int))/0.01 * (CF_weld(Cu_int+1,Ni_int+1)-CF_weld(Cu_int+1,Ni_int+1))
-              !Second, interpolate on nickel
-              CF = CF_1 + (Ni-0.2*(Ni_int-1))/0.2 * (CF_2-CF_1)
+          associate( &
+            CF_1 => CF_weld(Cu_int,Ni_int) + (Cu-0.01*(Cu_int))/0.01 * (CF_weld(Cu_int+1,Ni_int)-CF_weld(Cu_int+1,Ni_int)), &
+            CF_2 => CF_weld(Cu_int,Ni_int+1) + (Cu-0.01*(Cu_int))/0.01 * (CF_weld(Cu_int+1,Ni_int+1)-CF_weld(Cu_int+1,Ni_int+1)) &
+          )
+            !Second, interpolate on nickel
+            CF = CF_1 + (Ni-0.2*(Ni_int-1))/0.2 * (CF_2-CF_1)
+          end associate
               end select
           end if
         end associate
