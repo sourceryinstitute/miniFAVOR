@@ -19,6 +19,7 @@
     use calc_K, only : Ki_t
     use calc_cpi, only : cpi_t
     use randomness_m, only: random_samples_t
+    use material_content_m, only: material_content_t
 
     implicit none
 
@@ -30,6 +31,7 @@
     integer, parameter :: n_DAT = n_IN + 3
     integer :: i, j
     type(random_samples_t), allocatable :: samples(:)
+    type(material_content_t), allocatable :: material_content(:)
 
     ! Inputs
     real :: a, b
@@ -44,9 +46,7 @@
     real, allocatable :: R_Tndt(:)
     real, allocatable :: CPI(:)
     real, allocatable :: CPI_avg(:)
-    real, dimension(:,:), allocatable :: Chemistry_content
     real, dimension(:,:), allocatable :: cpi_hist
-    integer, parameter :: nmaterials=2
 
     ! Body of miniFAVOR
 
@@ -59,7 +59,7 @@
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
     !Allocate output arrays
-    allocate(Chemistry_content(nsim, nmaterials))
+    allocate(material_content(nsim))
     allocate(Chemistry_factor(nsim))
     allocate(cpi_hist(nsim, ntime))
     allocate(R_Tndt(nsim), CPI(nsim), CPI_avg(nsim), samples(nsim))
@@ -75,11 +75,11 @@
     !Start looping over number of simulations
     Vessel_loop: do i = 1, nsim
 
-        !Sample chemistry: Chemistry_content(i,1) is Cu content, Chemistry_content(i,2) is Ni content
-        call sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Chemistry_content(i,1), Chemistry_content(i,2), samples(i))
+        !Sample chemistry: assign Cu content and Ni content
+        material_content(i) = sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples(i))
 
         !Calculate chemistry factor: Chemistry_factor(i) is chemistry factor
-        Chemistry_factor(i) = CF(Chemistry_content(i,1), Chemistry_content(i,2))
+        Chemistry_factor(i) = CF(material_content(i)%Cu(), material_content(i)%Ni())
 
         !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
         R_Tndt(i) = RTndt(a, Chemistry_factor(i), fsurf, RTndt0, samples(i)%phi())
@@ -98,8 +98,14 @@
 
     end do Vessel_loop
 
-    call write_OUT(fn_IN, n_OUT, n_DAT, &
-        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
-        R_Tndt, CPI, CPI_avg, K_hist, Chemistry_content, Chemistry_factor)
+    block
+      integer, parameter :: nmaterials=2
+
+      associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
+        call write_OUT(fn_IN, n_OUT, n_DAT, &
+          a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
+          R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
+      end associate
+    end block
 
     end program miniFAVOR

@@ -38,12 +38,12 @@ module material_content_m
       character(*), intent(inout) :: iomsg
     end subroutine
 
-    pure module function Cu(self) result(my_Cu)
+    elemental module function Cu(self) result(my_Cu)
       class(material_content_t), intent(in) :: self
       real my_Cu
     end function
 
-    pure module function Ni(self) result(my_Ni)
+    elemental module function Ni(self) result(my_Ni)
       class(material_content_t), intent(in) :: self
       real my_Ni
     end function

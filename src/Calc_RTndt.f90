@@ -1,5 +1,6 @@
 module calc_RTndt
   use assertions_interface, only : assert
+  use material_content_m, only : material_content_t
 
 implicit none
 
@@ -86,14 +87,15 @@ implicit none
 
     !This subroutine samples the copper and nickel contents based on the nominal value
     !and the standard deviation
-    subroutine sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Cu_local, Ni_local, samples)
+    pure function sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples) result(material_content)
         use randomness_m, only : random_samples_t
 
         !Variables
         type(random_samples_t), intent(in) :: samples
         real, intent(in) :: Cu_ave, Ni_ave, Cu_sig, Ni_sig
-        real, intent(out) :: Cu_local, Ni_local
+        real :: Cu_local, Ni_local
         real :: Cu_bar, Cu_sig_star, Cu_sig_local
+        type(material_content_t) material_content
 
         ! Requires
         call assert(samples%user_defined(), "random_samples_t%sample_chem: samples%user_defined()")
@@ -107,6 +109,8 @@ implicit none
         !Sample local nickel content based on weld nickel heat 34B009 & W5214 procedure
         Ni_local = Ni_ave + Ni_sig*sqrt(2.0)*erfc(2*samples%Ni_local()-1)
 
-    end subroutine sample_chem
+        material_content = material_content_t(Cu=Cu_local, Ni=Ni_local)
+
+    end function sample_chem
 
 end module calc_RTndt
