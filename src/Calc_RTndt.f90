@@ -27,16 +27,13 @@ contains
 
     use constants_h, only: CF_weld
 
-    !Variables
     real :: CF
     real, intent(in) :: Cu, Ni
 
-    ! Calculate interpolation coefficients for copper/nickel percentages:
-    ! Truncate copper/nickel percentages to ranges [0%, 0.40%] and [0%, 1.2%], respectively.
+    truncate_and_interpolate: &
     associate( &
       Cu_int => rounded_and_bounded(Cu*100, bounds=[0, 40]), &
-      Ni_int => int(rounded_and_bounded(Ni*100, bounds=[0, 120])/20) + 1 &
-      ! Nickel contents in CF_weld are at intervals of 0.20% nickel
+      Ni_int => int(rounded_and_bounded(Ni*100, bounds=[0, 120])/20) + 1 &! Nickel contents in CF_weld are at intervals of 0.20%
     )
       !Bi-linear interpolation
       if (Cu <= 0.0 .or. Cu >= 0.40) then !only interpolate on nickel
@@ -63,7 +60,7 @@ contains
           end associate
         end select
       end if
-    end associate
+    end associate truncate_and_interpolate
 
   contains
 
@@ -96,20 +93,18 @@ contains
   pure function sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples) result(material_content)
     use randomness_m, only : random_samples_t
 
-    !Variables
+    type(material_content_t) material_content
     type(random_samples_t), intent(in) :: samples
     real, intent(in) :: Cu_ave, Ni_ave, Cu_sig, Ni_sig
-    type(material_content_t) material_content
 
-    ! Requires
     call assert(samples%user_defined(), "random_samples_t%sample_chem: samples%user_defined()")
 
     associate( &
       Cu_bar => Cu_ave * Cu_sig, &
       Cu_sig_star => min(0.0718*Cu_ave, 0.0185) &
     )
-     !Sample local copper content based on weld copper sampling procedure
       associate(Cu_sig_local => Cu_bar + Cu_sig_star*sqrt(2.0)*erfc(2*samples%Cu_sig_local()-1))
+        !Sample local copper content based on weld copper sampling procedure
         !Sample local nickel content based on weld nickel heat 34B009 & W5214 procedure
         associate( &
           Cu_local => Cu_ave + Cu_sig_local*sqrt(2.0)*erfc(2*samples%Cu_local()-1), &
