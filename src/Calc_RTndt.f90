@@ -91,23 +91,26 @@ implicit none
         !Variables
         type(random_samples_t), intent(in) :: samples
         real, intent(in) :: Cu_ave, Ni_ave, Cu_sig, Ni_sig
-        real :: Cu_local, Ni_local
-        real :: Cu_bar, Cu_sig_star, Cu_sig_local
         type(material_content_t) material_content
 
         ! Requires
         call assert(samples%user_defined(), "random_samples_t%sample_chem: samples%user_defined()")
 
-        !Sample local copper content based on weld copper sampling procedure
-        Cu_bar = Cu_ave * Cu_sig
-        Cu_sig_star = min(0.0718*Cu_ave, 0.0185)
-        Cu_sig_local = Cu_bar + Cu_sig_star*sqrt(2.0)*erfc(2*samples%Cu_sig_local()-1)
-        Cu_local = Cu_ave + Cu_sig_local*sqrt(2.0)*erfc(2*samples%Cu_local()-1)
+        associate( &
+          Cu_bar => Cu_ave * Cu_sig, &
+          Cu_sig_star => min(0.0718*Cu_ave, 0.0185) &
+        )
+         !Sample local copper content based on weld copper sampling procedure
+          associate(Cu_sig_local => Cu_bar + Cu_sig_star*sqrt(2.0)*erfc(2*samples%Cu_sig_local()-1))
+            !Sample local nickel content based on weld nickel heat 34B009 & W5214 procedure
+            associate( &
+              Cu_local => Cu_ave + Cu_sig_local*sqrt(2.0)*erfc(2*samples%Cu_local()-1), &
+              Ni_local => Ni_ave + Ni_sig*sqrt(2.0)*erfc(2*samples%Ni_local()-1))
 
-        !Sample local nickel content based on weld nickel heat 34B009 & W5214 procedure
-        Ni_local = Ni_ave + Ni_sig*sqrt(2.0)*erfc(2*samples%Ni_local()-1)
-
-        material_content = material_content_t(Cu=Cu_local, Ni=Ni_local)
+              material_content = material_content_t(Cu=Cu_local, Ni=Ni_local)
+            end associate
+          end associate
+        end associate
 
     end function sample_chem
 
