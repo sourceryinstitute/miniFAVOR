@@ -2,7 +2,7 @@ module calc_cpi
 
   implicit none
 
- contains
+contains
 
   ! calculate cpi(t)
   pure function cpi_t(K, RTndt, T)
