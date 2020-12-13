@@ -6,22 +6,20 @@ implicit none
 
     contains
 
-    !RTndt_x calculation
     pure function RTndt(a, CF, fsurf, RTndt0, phi)
 
-        !Variables
-        real :: RTndt, D_RTepi, D_RTndt, f
+        real :: RTndt
         real, intent(in) :: a, CF, fsurf, RTndt0, phi
 
-        !Calculate D_RTepi
-        D_RTepi = -29.5+78.0*(-log(1-phi))**(1/1.73)
+        associate( &
+          D_RTepi => -29.5+78.0*(-log(1-phi))**(1/1.73), &
+          f => fsurf*exp(-0.24*a) &
+        )
+          associate(D_RTndt => CF*f**(0.28-0.10*log10(f)))
 
-        !Calculate D_RTndt
-        f = fsurf*exp(-0.24*a)
-        D_RTndt = CF*f**(0.28-0.10*log10(f))
-
-        !Calculate the RTndt
-        RTndt = RTndt0 + D_RTepi + D_RTndt
+          RTndt = RTndt0 + D_RTepi + D_RTndt
+       end associate
+       end associate
 
     end function RTndt
 
