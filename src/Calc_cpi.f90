@@ -18,11 +18,7 @@ module calc_cpi
     cKic = 4.0
 
     !Calculate cpi_t
-    if (K < aKic) then
-        cpi_t = 0.0
-    else
-        cpi_t = 1-exp(-((K-aKic)/bKic)**cKic)
-    end if
+    cpi_t = merge(0.0,1-exp(-((K-aKic)/bKic)**cKic), K < aKic)
 
   end function cpi_t
 
