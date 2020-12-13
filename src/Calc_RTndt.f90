@@ -88,33 +88,4 @@ contains
 
   end function CF
 
-  !This subroutine samples the copper and nickel contents based on the nominal value
-  !and the standard deviation
-  pure function sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples) result(material_content)
-    use randomness_m, only : random_samples_t
-
-    type(material_content_t) material_content
-    type(random_samples_t), intent(in) :: samples
-    real, intent(in) :: Cu_ave, Ni_ave, Cu_sig, Ni_sig
-
-    call assert(samples%user_defined(), "random_samples_t%sample_chem: samples%user_defined()")
-
-    associate( &
-      Cu_bar => Cu_ave * Cu_sig, &
-      Cu_sig_star => min(0.0718*Cu_ave, 0.0185) &
-    )
-      associate(Cu_sig_local => Cu_bar + Cu_sig_star*sqrt(2.0)*erfc(2*samples%Cu_sig_local()-1))
-        !Sample local copper content based on weld copper sampling procedure
-        !Sample local nickel content based on weld nickel heat 34B009 & W5214 procedure
-        associate( &
-          Cu_local => Cu_ave + Cu_sig_local*sqrt(2.0)*erfc(2*samples%Cu_local()-1), &
-          Ni_local => Ni_ave + Ni_sig*sqrt(2.0)*erfc(2*samples%Ni_local()-1) &
-        )
-          material_content = material_content_t(Cu=Cu_local, Ni=Ni_local)
-        end associate
-      end associate
-    end associate
-
-  end function sample_chem
-
 end module calc_RTndt

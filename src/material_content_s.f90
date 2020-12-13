@@ -36,4 +36,26 @@ contains
      my_Ni = self%Ni_
   end procedure
 
+  module procedure sample_chem
+
+    call assert(samples%user_defined(), "material_content_s|sample_chem: samples%user_defined()")
+
+    associate( &
+      Cu_bar => Cu_ave * Cu_sig, &
+      Cu_sig_star => min(0.0718*Cu_ave, 0.0185) &
+    )
+      associate(Cu_sig_local => Cu_bar + Cu_sig_star*sqrt(2.0)*erfc(2*samples%Cu_sig_local()-1))
+        !Sample local copper content based on weld copper sampling procedure
+        !Sample local nickel content based on weld nickel heat 34B009 & W5214 procedure
+        associate( &
+          Cu_local => Cu_ave + Cu_sig_local*sqrt(2.0)*erfc(2*samples%Cu_local()-1), &
+          Ni_local => Ni_ave + Ni_sig*sqrt(2.0)*erfc(2*samples%Ni_local()-1) &
+        )
+          material_content = material_content_t(Cu=Cu_local, Ni=Ni_local)
+        end associate
+      end associate
+    end associate
+
+  end procedure
+
 end submodule
