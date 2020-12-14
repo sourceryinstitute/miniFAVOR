@@ -20,6 +20,7 @@
     use calc_cpi, only : cpi_t
     use randomness_m, only: random_samples_t
     use material_content_m, only: material_content_t
+    use data_partition_interface, only : data_partition
 
     implicit none
 
@@ -32,6 +33,7 @@
     integer :: i, j
     type(random_samples_t), allocatable :: samples(:)
     type(material_content_t), allocatable :: material_content(:)
+    type(data_partition) data_partition_
 
     ! Inputs
     real :: a, b
@@ -67,6 +69,12 @@
     !Calculate applied stress intensity factor (SIF)
     K_hist = Ki_t(a, b, stress)
 
+    call data_partition_%define_partitions(cardinality=nsim)
+
+    associate(me=>this_image(), nimages=>num_images())
+
+       print *,"image", me, ":", data_partition_%first(me), "-", data_partition_%last(me)
+
     ! This cannot be parallelized or reordered without the results changing
     do i = 1, nsim
       call samples(i)%define()
@@ -97,6 +105,8 @@
         CPI_avg(i) = sum(CPI(1:i))/i
 
     end do Vessel_loop
+
+    end associate
 
     block
       integer, parameter :: nmaterials=2
