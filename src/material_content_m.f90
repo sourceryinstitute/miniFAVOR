@@ -16,7 +16,7 @@ module material_content_m
 
   interface material_content_t
 
-    pure module function sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples) result(material_content)
+    elemental module function sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples) result(material_content)
       ! Contstruct a new material_content_t by sampling the copper and nickel contents based on
       ! the nominal value and the standard deviation
       use randomness_m, only : random_samples_t

@@ -23,7 +23,7 @@ contains
   end function RTndt
 
   !This function calculates the weld chemistry factor given the copper and nickel contents
-  pure function CF(Cu, Ni)
+  elemental function CF(Cu, Ni)
 
     use constants_h, only: CF_weld
 
