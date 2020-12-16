@@ -23,11 +23,6 @@ contains
 
   end procedure
 
-  module procedure user_define
-     new_material_content_t%Cu_ = Cu
-     new_material_content_t%Ni_ = Ni
-  end procedure
-
   module procedure Cu
      my_Cu = self%Cu_
   end procedure
@@ -51,7 +46,7 @@ contains
           Cu_local => Cu_ave + Cu_sig_local*sqrt(2.0)*erfc(2*samples%Cu_local()-1), &
           Ni_local => Ni_ave + Ni_sig*sqrt(2.0)*erfc(2*samples%Ni_local()-1) &
         )
-          material_content = material_content_t(Cu=Cu_local, Ni=Ni_local)
+          material_content = material_content_t(Cu_=Cu_local, Ni_=Ni_local)
         end associate
       end associate
     end associate

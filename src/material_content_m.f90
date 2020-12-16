@@ -16,14 +16,6 @@ module material_content_m
 
   interface material_content_t
 
-    pure module function user_define(Cu, Ni) result(new_material_content_t)
-      !! Define new material_content_t
-      implicit none
-      real, intent(in) :: Cu !! copper
-      real, intent(in) :: Ni !! nickel
-      type(material_content_t) new_material_content_t
-    end function
-
     pure module function sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples) result(material_content)
       ! Contstruct a new material_content_t by sampling the copper and nickel contents based on
       ! the nominal value and the standard deviation
