@@ -44,7 +44,6 @@
     ! Outputs
     real, allocatable :: K_hist(:)
     real, allocatable :: R_Tndt(:)
-    real, allocatable :: CPI(:)
     real, dimension(:,:), allocatable :: cpi_hist
 
     ! Body of miniFAVOR
@@ -59,7 +58,7 @@
 
     !Allocate output arrays
     allocate(cpi_hist(nsim, ntime))
-    allocate(R_Tndt(nsim), CPI(nsim), samples(nsim))
+    allocate(R_Tndt(nsim), samples(nsim))
 
     !Calculate applied stress intensity factor (SIF)
     K_hist = Ki_t(a, b, stress)
@@ -90,17 +89,13 @@
 
       !Start looping over number of simulations
       Vessel_loop: do i = 1, nsim
-
-          !Start time loop
           Time_loop: do j = 1, ntime
               !Calculate instantaneous cpi(t)
               cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
           end do Time_loop
-
-          !Calculate CPI for vessel 'i'
-          CPI(i) = maxval(cpi_hist(i,:))
-
       end do Vessel_loop
+
+      associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
 
       ! Moving average CPI for all trials
       associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
@@ -114,6 +109,7 @@
             R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
         end associate
       end block
+            end associate
           end associate
         end associate
       end associate
