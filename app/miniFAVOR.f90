@@ -79,36 +79,33 @@
 
           associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
 
-      !Start looping over number of simulations
-      do i = 1, nsim
+            !Start looping over number of simulations
+            Vessel_loop: do i = 1, nsim
+                Time_loop: do j = 1, ntime
 
-          !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-          R_Tndt(i) = RTndt(a, Chemistry_factor(i), fsurf, RTndt0, samples(i)%phi())
+                    !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
+                    R_Tndt(i) = RTndt(a, Chemistry_factor(i), fsurf, RTndt0, samples(i)%phi())
 
-      end do
+                    !Calculate instantaneous cpi(t)
+                    cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
 
-      !Start looping over number of simulations
-      Vessel_loop: do i = 1, nsim
-          Time_loop: do j = 1, ntime
-              !Calculate instantaneous cpi(t)
-              cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
-          end do Time_loop
-      end do Vessel_loop
+                end do Time_loop
+            end do Vessel_loop
 
-      associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
+            associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
 
-      ! Moving average CPI for all trials
-      associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
+              ! Moving average CPI for all trials
+              associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
 
-      block
-        integer, parameter :: nmaterials=2
+                block
+                 integer, parameter :: nmaterials=2
 
-        associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
-          call write_OUT(fn_IN, n_OUT, n_DAT, &
-            a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
-            R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
-        end associate
-      end block
+                 associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
+                   call write_OUT(fn_IN, n_OUT, n_DAT, &
+                     a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
+                     R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
+                 end associate
+               end block
             end associate
           end associate
         end associate
