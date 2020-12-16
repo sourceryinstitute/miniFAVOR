@@ -43,7 +43,6 @@
 
     ! Outputs
     real, allocatable :: K_hist(:)
-    real, allocatable :: Chemistry_factor(:)
     real, allocatable :: R_Tndt(:)
     real, allocatable :: CPI(:)
     real, allocatable :: CPI_avg(:)
@@ -60,7 +59,6 @@
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
     !Allocate output arrays
-    allocate(Chemistry_factor(nsim))
     allocate(cpi_hist(nsim, ntime))
     allocate(R_Tndt(nsim), CPI(nsim), CPI_avg(nsim), samples(nsim))
 
@@ -81,11 +79,10 @@
       !Sample chemistry: assign Cu content and Ni content
       associate(material_content => material_content_t(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples))
 
+          associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
+
       !Start looping over number of simulations
       do i = 1, nsim
-
-          !Calculate chemistry factor: Chemistry_factor(i) is chemistry factor
-          Chemistry_factor(i) = CF(material_content(i)%Cu(), material_content(i)%Ni())
 
           !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
           R_Tndt(i) = RTndt(a, Chemistry_factor(i), fsurf, RTndt0, samples(i)%phi())
@@ -119,6 +116,7 @@
             R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
         end associate
       end block
+        end associate
       end associate
     end associate
 
