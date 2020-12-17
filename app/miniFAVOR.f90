@@ -80,17 +80,15 @@
           associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
 
             !Start looping over number of simulations
-            Vessel_loop: do i = 1, nsim
-                Time_loop: do j = 1, ntime
+            do concurrent(i = 1:nsim, j = 1:ntime)
 
-                    !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-                    R_Tndt(i) = RTndt(a, Chemistry_factor(i), fsurf, RTndt0, samples(i)%phi())
+              !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
+              R_Tndt(i) = RTndt(a, Chemistry_factor(i), fsurf, RTndt0, samples(i)%phi())
 
-                    !Calculate instantaneous cpi(t)
-                    cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
+              !Calculate instantaneous cpi(t)
+              cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
 
-                end do Time_loop
-            end do Vessel_loop
+            end do
 
             associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
 

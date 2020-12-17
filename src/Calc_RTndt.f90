@@ -6,7 +6,7 @@ module calc_RTndt
 
 contains
 
-  pure function RTndt(a, CF, fsurf, RTndt0, phi)
+  elemental function RTndt(a, CF, fsurf, RTndt0, phi)
 
     real :: RTndt
     real, intent(in) :: a, CF, fsurf, RTndt0, phi
