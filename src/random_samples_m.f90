@@ -54,7 +54,7 @@ module randomness_m
       real self_Ni_local
     end function
 
-    pure module function phi(self) result(self_phi)
+    elemental module function phi(self) result(self_phi)
       implicit none
       class(random_samples_t), intent(in) :: self
       real self_phi

@@ -42,8 +42,6 @@
     real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
 
     ! Outputs
-    real, allocatable :: K_hist(:)
-    real, allocatable :: R_Tndt(:)
     real, dimension(:,:), allocatable :: cpi_hist
 
     ! Body of miniFAVOR
@@ -58,10 +56,10 @@
 
     !Allocate output arrays
     allocate(cpi_hist(nsim, ntime))
-    allocate(R_Tndt(nsim), samples(nsim))
+    allocate(samples(nsim))
 
     !Calculate applied stress intensity factor (SIF)
-    K_hist = Ki_t(a, b, stress)
+    associate(K_hist => Ki_t(a, b, stress))
 
     call data_partition%define_partitions(cardinality=nsim)
 
@@ -76,25 +74,17 @@
 
       !Sample chemistry: assign Cu content and Ni content
       associate(material_content => material_content_t(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples))
-
-          associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
-
+        associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
+          !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
+          associate(R_Tndt => RTndt(a, Chemistry_factor, fsurf, RTndt0, samples%phi()))
             !Start looping over number of simulations
             do concurrent(i = 1:nsim, j = 1:ntime)
-
-              !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-              R_Tndt(i) = RTndt(a, Chemistry_factor(i), fsurf, RTndt0, samples(i)%phi())
-
-              !Calculate instantaneous cpi(t)
+              ! Instantaneous cpi(t)
               cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
-
             end do
-
             associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
-
               ! Moving average CPI for all trials
               associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
-
                 block
                  integer, parameter :: nmaterials=2
 
@@ -103,8 +93,11 @@
                      a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
                      R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
                  end associate
+
                end block
-            end associate
+               end associate
+             end associate
+           end associate
           end associate
         end associate
       end associate
