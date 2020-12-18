@@ -18,7 +18,7 @@
     use calc_RTndt, only : RTndt, CF
     use calc_K, only : Ki_t
     use calc_cpi, only : cpi_t
-    use randomness_m, only: random_samples_t
+    use random_samples_m, only: random_samples_t
     use material_content_m, only: material_content_t
     use data_partition_interface, only : data_partition_t => data_partition
 

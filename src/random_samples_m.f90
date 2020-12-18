@@ -1,4 +1,4 @@
-module randomness_m
+module random_samples_m
   use object_interface, only : object
   implicit none
   private
