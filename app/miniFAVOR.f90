@@ -50,6 +50,8 @@
     print *, 'Input file name:'
     read (*,'(a)') fn_IN
 
+    call co_broadcast(fn_IN, source_image=1)
+
     !Read input file
     call read_IN(fn_IN, n_IN, n_ECHO, &
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
