@@ -6,6 +6,8 @@ add_library(minifav
   I_O.f90
   random_samples_m.f90
   random_samples_s.f90
+  material_content_m.f90
+  material_content_s.f90
 )
 target_link_libraries(minifav
   PRIVATE sourcery
