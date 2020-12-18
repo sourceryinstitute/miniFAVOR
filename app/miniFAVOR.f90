@@ -15,7 +15,7 @@
     program miniFAVOR
 
     use I_O, only : read_In, write_Out
-    use calc_RTndt, only : RTndt, CF, sample_chem
+    use calc_RTndt, only : RTndt, CF
     use calc_K, only : Ki_t
     use calc_cpi, only : cpi_t
     use randomness_m, only: random_samples_t
@@ -76,7 +76,7 @@
     Vessel_loop: do i = 1, nsim
 
         !Sample chemistry: assign Cu content and Ni content
-        material_content(i) = sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples(i))
+        material_content(i) = material_content_t(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples(i))
 
         !Calculate chemistry factor: Chemistry_factor(i) is chemistry factor
         Chemistry_factor(i) = CF(material_content(i)%Cu(), material_content(i)%Ni())
