@@ -14,6 +14,10 @@ endif()
 string  (JOIN "\n " GREETING "Version: ${FAVOR_VERSION}\n Build type: ${CMAKE_BUILD_TYPE}\n")
 message (STATUS "\n${GREETING}")
 
+file    (READ ${CMAKE_CURRENT_LIST_DIR}/doc/ascii-art.txt LOGO)
+string  (JOIN "\n " GREETING "${LOGO}" "Version: ${MINIFAVOR_VERSION}\n Build type: ${CMAKE_BUILD_TYPE}\n")
+message (STATUS "\n${GREETING}")
+
 project(favor
   VERSION "${FAVOR_VERSION}"
   LANGUAGES Fortran
