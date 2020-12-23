@@ -39,7 +39,7 @@ endif()
 if(CMAKE_Fortran_COMPILER_ID MATCHES GNU)
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Wall -std=f2018 -fcoarray=single")
 elseif(CMAKE_Fortran_COMPILER_ID MATCHES Intel)
-  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -standard-semantics -stand:f18 -Qcoarray")
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -standard-semantics -stand:f18 /Qcoarray /Qcoarray-num-images:4")
 elseif(CMAKE_Fortran_COMPILER_ID MATCHES NAG)
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -f2018")
 endif()
@@ -95,10 +95,10 @@ endforeach()
 
 enable_testing()
 
-add_test(NAME integration_test
-  COMMAND ${CMAKE_BINARY_DIR}/tests/integration/run_test.sh
-  WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/integration
-)
+# add_test(NAME integration_test
+  # COMMAND ${CMAKE_BINARY_DIR}/tests/integration/run_test.sh
+  # WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/integration
+# )
 
 add_test(NAME unit_tests
   COMMAND ${CMAKE_BINARY_DIR}/tests/unit/unit_tests
