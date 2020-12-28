@@ -17,23 +17,27 @@ target_link_libraries(vegetables
   PRIVATE iso_varying_string
 )
 
-#add_library(parff
-# parff/src/parff.f90
-#)
-#target_link_libraries(parff
-#  PRIVATE iso_varying_string
-#  PRIVATE strff
-#)
+if (NOT Win32)
 
-#add_executable(make_vegetables_driver
-#  vegetables/app/main.f90
-#  vegetables/app/make_driver_m.f90
-#)
-#target_link_libraries(make_vegetables_driver
-#  PRIVATE parff
-#  PRIVATE strff
-#  PRIVATE iso_varying_string
-#)
+  add_library(parff
+   parff/src/parff.f90
+  )
+  target_link_libraries(parff
+    PRIVATE iso_varying_string
+    PRIVATE strff
+  )
+
+  add_executable(make_vegetables_driver
+    vegetables/app/main.f90
+    vegetables/app/make_driver_m.f90
+  )
+  target_link_libraries(make_vegetables_driver
+    PRIVATE parff
+    PRIVATE strff
+    PRIVATE iso_varying_string
+  )
+
+endif()
 
 add_library(sourcery
   sourcery/src/array_functions_implementation.f90
