@@ -4,6 +4,7 @@ summary: Proxy Application miniFAVOR
 src_dir: ../app
          ../src
 exclude_dir: ../doc
+exclude_dir: ../src/git-submodules
 output_dir: ../doc/html
 preprocess: true
 macro: FORD
