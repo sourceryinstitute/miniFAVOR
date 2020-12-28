@@ -95,10 +95,14 @@ endforeach()
 
 enable_testing()
 
-# add_test(NAME integration_test
-  # COMMAND ${CMAKE_BINARY_DIR}/tests/integration/run_test.sh
-  # WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/integration
-# )
+if(Win32)
+  message(WARNING "The bash-script integration test will not be built on Windows.\n TODO: replace with a Fortran test.")
+else()
+  add_test(NAME integration_test
+    COMMAND ${CMAKE_BINARY_DIR}/tests/integration/run_test.sh
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/integration
+  )
+endif()
 
 add_test(NAME unit_tests
   COMMAND ${CMAKE_BINARY_DIR}/tests/unit/unit_tests
