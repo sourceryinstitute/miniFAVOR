@@ -10,7 +10,7 @@ target_link_libraries(strff
 )
 
 add_library(vegetables
-  vegetables/src/vegetables.f90
+  vegetables/src/vegetables.F90
 )
 target_link_libraries(vegetables
   PRIVATE strff
