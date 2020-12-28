@@ -3,8 +3,8 @@ project: miniFAVOR
 summary: Proxy Application miniFAVOR
 src_dir: ../app
          ../src
-exclude_dir: ../doc/miniFAVOR-doc
-output_dir: ../doc/miniFAVOR-doc
+exclude_dir: ../doc
+output_dir: ../doc/html
 preprocess: true
 macro: FORD
 preprocessor: gfortran -E
