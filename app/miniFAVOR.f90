@@ -21,6 +21,7 @@
     use random_samples_m, only: random_samples_t
     use material_content_m, only: material_content_t
     use data_partition_interface, only : data_partition_t => data_partition
+    use iso_fortran_env, only : input_unit
 
     implicit none
 
@@ -30,6 +31,7 @@
     integer, parameter :: n_ECHO = n_IN + 1
     integer, parameter :: n_OUT = n_IN + 2
     integer, parameter :: n_DAT = n_IN + 3
+    integer, parameter :: input_unit_reader=1
     integer :: i, j
     type(random_samples_t), allocatable :: samples(:)
     type(data_partition_t) data_partition
@@ -46,11 +48,15 @@
 
     ! Body of miniFAVOR
 
-    !Get input file name
-    print *, 'Input file name:'
-    read (*,'(a)') fn_IN
+    associate(me=>this_image())
 
-    call co_broadcast(fn_IN, source_image=1)
+    !Get input file name
+    if  (me==input_unit_reader) then
+    print *, 'Input file name:'
+    read (input_unit,'(a)') fn_IN
+    end if
+
+    call co_broadcast(fn_IN, source_image=input_unit_reader)
 
     !Read input file
     call read_IN(fn_IN, n_IN, n_ECHO, &
@@ -64,8 +70,6 @@
     associate(K_hist => Ki_t(a, b, stress))
 
     call data_partition%define_partitions(cardinality=nsim)
-
-    associate(me=>this_image())
 
       ! This cannot be parallelized or reordered without the results changing
       do i = 1, nsim
