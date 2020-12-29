@@ -65,9 +65,7 @@
 
     call data_partition%define_partitions(cardinality=nsim)
 
-    associate(me=>this_image(), nimages=>num_images())
-
-      print *,"image", me, ":", data_partition%first(me), "-", data_partition%last(me)
+    associate(me=>this_image())
 
       ! This cannot be parallelized or reordered without the results changing
       do i = 1, nsim
