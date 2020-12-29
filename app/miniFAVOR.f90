@@ -50,58 +50,58 @@
 
     associate(me=>this_image())
 
-    !Get input file name
-    if  (me==input_unit_reader) then
-    print *, 'Input file name:'
-    read (input_unit,'(a)') fn_IN
-    end if
+      !Get input file name
+      if  (me==input_unit_reader) then
+        print *, 'Input file name:'
+        read (input_unit,'(a)') fn_IN
+      end if
 
-    call co_broadcast(fn_IN, source_image=input_unit_reader)
+      call co_broadcast(fn_IN, source_image=input_unit_reader)
 
-    !Read input file
-    call read_IN(fn_IN, n_IN, n_ECHO, &
-        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
+      !Read input file
+      call read_IN(fn_IN, n_IN, n_ECHO, &
+          a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
-    !Allocate output arrays
-    allocate(cpi_hist(nsim, ntime))
-    allocate(samples(nsim))
+      !Allocate output arrays
+      allocate(cpi_hist(nsim, ntime))
+      allocate(samples(nsim))
 
-    !Calculate applied stress intensity factor (SIF)
-    associate(K_hist => Ki_t(a, b, stress))
+      !Calculate applied stress intensity factor (SIF)
+      associate(K_hist => Ki_t(a, b, stress))
 
-    call data_partition%define_partitions(cardinality=nsim)
+        call data_partition%define_partitions(cardinality=nsim)
 
-      ! This cannot be parallelized or reordered without the results changing
-      do i = 1, nsim
-        call samples(i)%define()
-      end do
+        ! This cannot be parallelized or reordered without the results changing
+        do i = 1, nsim
+          call samples(i)%define()
+        end do
 
-      !Sample chemistry: assign Cu content and Ni content
-      associate(material_content => material_content_t(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples))
-        associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
-          !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-          associate(R_Tndt => RTndt(a, Chemistry_factor, fsurf, RTndt0, samples%phi()))
-            !Start looping over number of simulations
-            do concurrent(i = 1:nsim, j = 1:ntime)
-              ! Instantaneous cpi(t)
-              cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
-            end do
-            associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
-              ! Moving average CPI for all trials
-              associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
-                block
-                 integer, parameter :: nmaterials=2
+        !Sample chemistry: assign Cu content and Ni content
+        associate(material_content => material_content_t(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples))
+          associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
+            !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
+            associate(R_Tndt => RTndt(a, Chemistry_factor, fsurf, RTndt0, samples%phi()))
+              !Start looping over number of simulations
+              do concurrent(i = 1:nsim, j = 1:ntime)
+                ! Instantaneous cpi(t)
+                cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
+              end do
+              associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
+                ! Moving average CPI for all trials
+                associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
+                  block
+                    integer, parameter :: nmaterials=2
 
-                 associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
-                   call write_OUT(fn_IN, n_OUT, n_DAT, &
-                     a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
-                     R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
-                 end associate
+                    associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
+                      call write_OUT(fn_IN, n_OUT, n_DAT, &
+                        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
+                        R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
+                    end associate
 
-               end block
-               end associate
-             end associate
-           end associate
+                  end block
+                end associate
+              end associate
+            end associate
           end associate
         end associate
       end associate
