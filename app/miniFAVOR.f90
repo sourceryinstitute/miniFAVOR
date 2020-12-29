@@ -14,13 +14,14 @@
 
     program miniFAVOR
 
-    use I_O, only : read_In, write_Out
     use calc_RTndt, only : RTndt, CF
     use calc_K, only : Ki_t
     use calc_cpi, only : cpi_t
     use random_samples_m, only: random_samples_t
     use material_content_m, only: material_content_t
     use data_partition_interface, only : data_partition_t => data_partition
+    use input_m, only : read_IN
+    use output_m, only : write_OUT
     use iso_fortran_env, only : input_unit
 
     implicit none
