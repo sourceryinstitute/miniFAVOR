@@ -20,22 +20,19 @@
     use random_samples_m, only: random_samples_t
     use material_content_m, only: material_content_t
     use data_partition_interface, only : data_partition_t => data_partition
-    use input_m, only : read_IN
-    use output_m, only : write_OUT
+    use input_data_m, only : input_data_t
+    use output_data_m, only : write_OUT
     use iso_fortran_env, only : input_unit
 
     implicit none
 
     ! Variables
     character(len=64) :: fn_IN
-    integer, parameter :: n_IN = 15
-    integer, parameter :: n_ECHO = n_IN + 1
-    integer, parameter :: n_OUT = n_IN + 2
-    integer, parameter :: n_DAT = n_IN + 3
     integer, parameter :: input_unit_reader=1
     integer :: i, j
     type(random_samples_t), allocatable :: samples(:)
     type(data_partition_t) data_partition
+    type(input_data_t) input_data
 
     ! Inputs
     real :: a, b
@@ -57,10 +54,8 @@
         read (input_unit,'(a)') fn_IN
       end if
 
-      call co_broadcast(fn_IN, source_image=input_unit_reader)
-
       !Read input file
-      call read_IN(fn_IN, n_IN, n_ECHO, &
+      call input_data%read_IN(fn_IN, &
           a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
       !Allocate output arrays
@@ -94,7 +89,7 @@
                     integer, parameter :: nmaterials=2
 
                     associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
-                      call write_OUT(fn_IN, n_OUT, n_DAT, &
+                      call write_OUT(fn_IN, &
                         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
                         R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
                     end associate

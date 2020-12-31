@@ -1,16 +1,21 @@
-module input_m
+module input_data_m
   implicit none
 
   private
-  public :: read_IN
+  public :: input_data_t
+
+  type input_data_t
+  contains
+    procedure :: read_IN
+  end type
 
   interface
 
-    module subroutine read_IN(fn_IN, n_IN, n_ECHO, &
+    module subroutine read_IN(self, fn_IN, &
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
       implicit none
 
-      integer, intent(in) :: n_IN, n_ECHO
+      class(input_data_t), intent(out) :: self
       character(len=64), intent(in) :: fn_IN
       real, intent(out) :: a, b, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
       integer, intent(out) :: nsim, ntime
@@ -20,4 +25,4 @@ module input_m
 
   end interface
 
-end module input_m
+end module input_data_m

@@ -1,4 +1,4 @@
-submodule(input_m) input_s
+submodule(input_data_m) input_data_s
   implicit none
 
 contains
@@ -6,12 +6,12 @@ contains
     module procedure read_IN
 
       character(len=64) :: fn_ECHO
-      integer :: i
+      integer :: i, n_IN, n_ECHO
 
       !Open input file and create echo file
-      open (unit=n_IN, file=fn_IN, status='old', form='formatted')
+      open (newunit=n_IN, file=fn_IN, status='old', form='formatted')
       fn_ECHO = fn_IN(1:index(fn_IN, '.in')-1)//'.echo'
-      open (unit=n_ECHO, file=fn_ECHO, status='unknown', form='formatted')
+      open (newunit=n_ECHO, file=fn_ECHO, status='unknown', form='formatted')
 
       !Read and echo crack depth and vessel thickness
       read (n_IN, *) a, b
@@ -49,4 +49,4 @@ contains
 
     end procedure read_IN
 
-end submodule input_s
+end submodule input_data_s

@@ -1,4 +1,4 @@
-module output_m
+module output_data_m
   implicit none
 
   private
@@ -6,13 +6,12 @@ module output_m
 
   interface
 
-    module subroutine write_OUT(fn_IN, n_OUT, n_DAT, &
+    module subroutine write_OUT(fn_IN, &
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
         R_Tndt, CPI, CPI_avg, K_hist, Chemistry_content, Chemistry_factor)
       implicit none
 
       character(len=64), intent(in) :: fn_IN
-      integer, intent(in) :: n_OUT, n_DAT
       real, intent(in) :: a, b, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
       integer, intent(in) :: nsim, ntime
       logical, intent(in) :: details
@@ -25,4 +24,4 @@ module output_m
 
   end interface
 
-end module output_m
+end module output_data_m

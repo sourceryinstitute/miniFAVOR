@@ -1,4 +1,4 @@
-submodule(output_m) output_s
+submodule(output_data_m) output_data_s
 
   implicit none
 
@@ -7,11 +7,11 @@ contains
   module procedure write_OUT
 
       character(len=64) :: fn_OUT, fn_DAT
-      integer :: i
+      integer :: i, n_OUT, n_DAT
 
       !Open output file
       fn_OUT = fn_IN(1:index(fn_IN, '.in')-1)//'.out'
-      open (unit=n_OUT, file=fn_OUT, status='unknown', form='formatted')
+      open (newunit=n_OUT, file=fn_OUT, status='unknown', form='formatted')
 
       !Write out important outputs summary
       write (n_OUT, '(a)') 'MiniFAVOR Output Summary'
@@ -37,7 +37,7 @@ contains
       !Write out detailed output to data file
       if (details) then
           fn_DAT = fn_IN(1:index(fn_IN, '.in')-1)//'.dat'
-          open (unit=n_DAT, file=fn_DAT, status='unknown', form='formatted')
+          open (newunit=n_DAT, file=fn_DAT, status='unknown', form='formatted')
           write (n_DAT, '(a)') 'MiniFAVOR Detailed Output'
           write (n_DAT, '(a)') '/Applied SIF (ksi*in^0.5)/'
           write_SIF: do  i = 1, ntime
@@ -58,4 +58,4 @@ contains
 
   end procedure write_OUT
 
-end submodule output_s
+end submodule output_data_s
