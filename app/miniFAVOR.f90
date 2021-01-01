@@ -35,7 +35,6 @@
     type(input_data_t) input_data
 
     ! Inputs
-    real :: a, b
     integer :: nsim, ntime
     logical :: details
     real, dimension(:), allocatable :: stress, temp
@@ -56,14 +55,14 @@
 
       !Read input file
       call input_data%define(fn_IN, &
-          a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
+          nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
       !Allocate output arrays
       allocate(cpi_hist(nsim, ntime))
       allocate(samples(nsim))
 
       !Calculate applied stress intensity factor (SIF)
-      associate(K_hist => Ki_t(a, b, stress))
+      associate(K_hist => Ki_t(input_data%a(), input_data%b(), stress))
 
         call data_partition%define_partitions(cardinality=nsim)
 
@@ -76,7 +75,7 @@
         associate(material_content => material_content_t(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples))
           associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
             !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-            associate(R_Tndt => RTndt(a, Chemistry_factor, fsurf, RTndt0, samples%phi()))
+            associate(R_Tndt => RTndt(input_data%a(), Chemistry_factor, fsurf, RTndt0, samples%phi()))
               !Start looping over number of simulations
               do concurrent(i = 1:nsim, j = 1:ntime)
                 ! Instantaneous cpi(t)
@@ -90,7 +89,7 @@
 
                     associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
                       call write_OUT(fn_IN, &
-                        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
+                        input_data%a(), input_data%b(), nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
                         R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
                     end associate
 

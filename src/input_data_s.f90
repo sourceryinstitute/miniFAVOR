@@ -14,9 +14,9 @@ contains
       open (newunit=n_ECHO, file=fn_ECHO, status='unknown', form='formatted')
 
       !Read and echo crack depth and vessel thickness
-      read (n_IN, *) a, b
-      write (n_ECHO, '(a25,f10.3,a)') 'Crack Depth: ', a, ' in'
-      write (n_ECHO, '(a25,f10.3,a)') 'Vessel Thickness: ', b, ' in'
+      read (n_IN, *) self%a_, self%b_
+      write (n_ECHO, '(a25,f10.3,a)') 'Crack Depth: ', self%a(), ' in'
+      write (n_ECHO, '(a25,f10.3,a)') 'Vessel Thickness: ', self%b(), ' in'
 
       !Read and echo number of simulations to be performed andnumber of time steps
       read (n_IN, *) nsim, ntime
@@ -48,5 +48,13 @@ contains
       end do read_transient
 
     end procedure define
+
+    module procedure a
+       self_a = self%a_
+    end procedure
+
+    module procedure b
+       self_b = self%b_
+    end procedure
 
 end submodule input_data_s
