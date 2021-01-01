@@ -55,7 +55,7 @@
       end if
 
       !Read input file
-      call input_data%read_IN(fn_IN, &
+      call input_data%define(fn_IN, &
           a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
       !Allocate output arrays

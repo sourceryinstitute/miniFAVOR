@@ -3,7 +3,7 @@ submodule(input_data_m) input_data_s
 
 contains
 
-    module procedure read_IN
+    module procedure define
 
       character(len=64) :: fn_ECHO
       integer :: i, n_IN, n_ECHO
@@ -47,6 +47,6 @@ contains
           write (n_ECHO, '(f10.3,9x,f10.3)') stress(i), temp(i)
       end do read_transient
 
-    end procedure read_IN
+    end procedure define
 
 end submodule input_data_s

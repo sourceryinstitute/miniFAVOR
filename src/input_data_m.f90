@@ -6,12 +6,12 @@ module input_data_m
 
   type input_data_t
   contains
-    procedure :: read_IN
+    procedure :: define
   end type
 
   interface
 
-    module subroutine read_IN(self, fn_IN, &
+    module subroutine define(self, fn_IN, &
         a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
       implicit none
 
