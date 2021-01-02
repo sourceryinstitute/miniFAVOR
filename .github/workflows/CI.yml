@@ -49,6 +49,6 @@ jobs:
       uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
         BRANCH: gh-pages
-        FOLDER: doc/miniFAVOR-doc
+        FOLDER: doc/html
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         CLEAN: true

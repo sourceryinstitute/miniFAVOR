@@ -1,10 +1,11 @@
 ---
 project: miniFAVOR
-summary: Proxy Application miniFAVOR 
+summary: Proxy Application miniFAVOR
 src_dir: ../app
          ../src
-exclude_dir: ../doc/miniFAVOR-doc
-output_dir: ../doc/miniFAVOR-doc
+exclude_dir: ../doc
+exclude_dir: ../src/git-submodules
+output_dir: ../doc/html
 preprocess: true
 macro: FORD
 preprocessor: gfortran -E
@@ -57,7 +58,7 @@ The [FORD] tool is used to document Modern Fortran source code.
 
 You can navigate through the source code by using the black navigation bar at the top of this landing page. In addition, the search box on the right side of the top navbar, the following link is available:
 
-* [Source Files]:  
+* [Source Files]:
   This landing page enumerates the source files associated with the project,
   includes a graph depicting their interdependencies and links to their dedicated pages.
 
@@ -69,7 +70,7 @@ Getting Help
 
 If you encounter a problem, have a suggestion, or want to ask a question,
 we encourage you to post an issue in [this projects Github repository] by
-[opening a new issue]. 
+[opening a new issue].
 
 [this projects Github repository]: https://github.com/sourceryinstitute/miniFAVOR
 [opening a new issue]: https://github.com/sourceryinstitute/miniFAVOR/issues/new
