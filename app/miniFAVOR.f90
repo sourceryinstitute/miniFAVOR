@@ -35,7 +35,6 @@
     type(input_data_t) input_data
 
     ! Inputs
-    integer :: nsim, ntime
     logical :: details
     real, dimension(:), allocatable :: stress, temp
     real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
@@ -55,19 +54,19 @@
 
       !Read input file
       call input_data%define(fn_IN, &
-          nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
-
-      !Allocate output arrays
-      allocate(cpi_hist(nsim, ntime))
-      allocate(samples(nsim))
+          details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
 
       !Calculate applied stress intensity factor (SIF)
-      associate(K_hist => Ki_t(input_data%a(), input_data%b(), stress))
+      associate( &
+        K_hist => Ki_t(input_data%a(), input_data%b(), stress), &
+        nsim => input_data%nsim(), &
+        ntime => input_data%ntime() &
+      )
 
         call data_partition%define_partitions(cardinality=nsim)
 
-        ! This cannot be parallelized or reordered without the results changing
-        do i = 1, nsim
+        allocate(samples(nsim))
+        do i = 1, nsim ! This cannot be parallelized or reordered without the results changing
           call samples(i)%define()
         end do
 
@@ -77,6 +76,7 @@
             !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
             associate(R_Tndt => RTndt(input_data%a(), Chemistry_factor, fsurf, RTndt0, samples%phi()))
               !Start looping over number of simulations
+              allocate(cpi_hist(nsim, ntime))
               do concurrent(i = 1:nsim, j = 1:ntime)
                 ! Instantaneous cpi(t)
                 cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))

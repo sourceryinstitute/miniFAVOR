@@ -19,9 +19,9 @@ contains
       write (n_ECHO, '(a25,f10.3,a)') 'Vessel Thickness: ', self%b(), ' in'
 
       !Read and echo number of simulations to be performed andnumber of time steps
-      read (n_IN, *) nsim, ntime
-      write (n_ECHO, '(a25,i10)') 'Number of Simulations: ', nsim
-      write (n_ECHO, '(a25,i10)') 'Number of Time Steps: ', ntime
+      read (n_IN, *) self%nsim_, self%ntime_
+      write (n_ECHO, '(a25,i10)') 'Number of Simulations: ', self%nsim()
+      write (n_ECHO, '(a25,i10)') 'Number of Time Steps: ', self%ntime()
 
       !Read in and echo type of output to be written
       read (n_IN, *) details
@@ -37,12 +37,12 @@ contains
       write (n_ECHO, '(a25,f10.3,a)') 'Unirradiated RTndt: ', RTndt0, ' degF'
 
       !Allocate stress and temperature arrays
-      allocate(stress(ntime))
-      allocate(temp(ntime))
+      allocate(stress(self%ntime()))
+      allocate(temp(self%ntime()))
 
       !Read and echo stress and temerature inputs
       write (n_ECHO, '(a)') 'Stress (ksi),      Temperature (degF)'
-      read_transient: do  i = 1, ntime
+      read_transient: do  i = 1, self%ntime()
           read (n_IN, *) stress(i), temp(i)
           write (n_ECHO, '(f10.3,9x,f10.3)') stress(i), temp(i)
       end do read_transient
@@ -55,6 +55,14 @@ contains
 
     module procedure b
        self_b = self%b_
+    end procedure
+
+    module procedure nsim
+       self_nsim = self%nsim_
+    end procedure
+
+    module procedure ntime
+       self_ntime = self%ntime_
     end procedure
 
 end submodule input_data_s
