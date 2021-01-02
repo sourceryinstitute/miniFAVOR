@@ -34,10 +34,6 @@
     type(data_partition_t) data_partition
     type(input_data_t) input_data
 
-    ! Inputs
-    real, dimension(:), allocatable :: stress, temp
-    real :: fsurf, RTndt0
-
     ! Outputs
     real, dimension(:,:), allocatable :: cpi_hist
 
@@ -52,11 +48,11 @@
       end if
 
       !Read input file
-      call input_data%define(fn_IN, fsurf, RTndt0, stress, temp)
+      call input_data%define(fn_IN)
 
       !Calculate applied stress intensity factor (SIF)
       associate( &
-        K_hist => Ki_t(input_data%a(), input_data%b(), stress), &
+        K_hist => Ki_t(input_data%a(), input_data%b(), input_data%stress()), &
         nsim => input_data%nsim(), &
         ntime => input_data%ntime() &
       )
@@ -75,12 +71,14 @@
         )
           associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
             !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-            associate(R_Tndt => RTndt(input_data%a(), Chemistry_factor, fsurf, RTndt0, samples%phi()))
+            associate(R_Tndt => RTndt(input_data%a(), Chemistry_factor, input_data%fsurf(), input_data%RTndt0(), samples%phi()))
               !Start looping over number of simulations
               allocate(cpi_hist(nsim, ntime))
               do concurrent(i = 1:nsim, j = 1:ntime)
                 ! Instantaneous cpi(t)
-                cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
+                associate(temp => input_data%temp())
+                  cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
+                end associate
               end do
               associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
                 ! Moving average CPI for all trials
@@ -91,7 +89,8 @@
                     associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
                       call write_OUT(fn_IN, &
                         input_data%a(), input_data%b(), nsim, ntime, input_data%details(), &
-                        input_data%Cu_ave(), input_data%Ni_ave(), input_data%Cu_sig(), input_data%Ni_sig(), fsurf, RTndt0, &
+                        input_data%Cu_ave(), input_data%Ni_ave(), input_data%Cu_sig(), input_data%Ni_sig(), &
+                        input_data%fsurf(), input_data%RTndt0(), &
                         R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
                     end associate
 

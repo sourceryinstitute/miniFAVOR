@@ -28,23 +28,23 @@ contains
       write (n_ECHO, '(a25,l10)') 'Detailed output: ', self%details()
 
       !Read and echo embrittlement inputs
-      read (n_IN, *) self%Cu_ave_, self%Ni_ave_, self%Cu_sig_, self%Ni_sig_, fsurf, RTndt0
+      read (n_IN, *) self%Cu_ave_, self%Ni_ave_, self%Cu_sig_, self%Ni_sig_, self%fsurf_, self%RTndt0_
       write (n_ECHO, '(a25,f10.3,a)') 'Copper Content: ', self%Cu_ave(), ' %'
       write (n_ECHO, '(a25,f10.3,a)') 'Nickel Content: ', self%Ni_ave(), ' %'
       write (n_ECHO, '(a25,f10.3,a)') 'Copper Content STDEV: ', self%Cu_sig(), ' %'
       write (n_ECHO, '(a25,f10.3,a)') 'Nickel Content STDEV: ', self%Ni_sig(), ' %'
-      write (n_ECHO, '(a25,f10.3,a)') 'ID Surface Fluence: ', fsurf, ' n/cm^2'
-      write (n_ECHO, '(a25,f10.3,a)') 'Unirradiated RTndt: ', RTndt0, ' degF'
+      write (n_ECHO, '(a25,f10.3,a)') 'ID Surface Fluence: ', self%fsurf(), ' n/cm^2'
+      write (n_ECHO, '(a25,f10.3,a)') 'Unirradiated RTndt: ', self%RTndt0(), ' degF'
 
       !Allocate stress and temperature arrays
-      allocate(stress(self%ntime()))
-      allocate(temp(self%ntime()))
+      allocate(self%stress_(self%ntime()))
+      allocate(self%temp_(self%ntime()))
 
       !Read and echo stress and temerature inputs
       write (n_ECHO, '(a)') 'Stress (ksi),      Temperature (degF)'
       read_transient: do  i = 1, self%ntime()
-          read (n_IN, *) stress(i), temp(i)
-          write (n_ECHO, '(f10.3,9x,f10.3)') stress(i), temp(i)
+          read (n_IN, *) self%stress_(i), self%temp_(i)
+          write (n_ECHO, '(f10.3,9x,f10.3)') self%stress_(i), self%temp_(i)
       end do read_transient
 
     end procedure define
@@ -83,6 +83,22 @@ contains
 
     module procedure Ni_sig
        self_Ni_sig = self%Ni_sig_
+    end procedure
+
+    module procedure fsurf
+       self_fsurf = self%fsurf_
+    end procedure
+
+    module procedure RTndt0
+       self_RTndt0 = self%RTndt0_
+    end procedure
+
+    module procedure stress
+       self_stress = self%stress_
+    end procedure
+
+    module procedure temp
+       self_temp = self%temp_
     end procedure
 
 end submodule input_data_s

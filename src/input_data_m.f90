@@ -6,7 +6,8 @@ module input_data_m
 
   type input_data_t
     private
-    real :: a_, b_, Cu_ave_, Ni_ave_, Cu_sig_, Ni_sig_
+    real :: a_, b_, Cu_ave_, Ni_ave_, Cu_sig_, Ni_sig_, fsurf_, RTndt0_
+    real, allocatable, dimension(:) :: stress_, temp_
     integer :: nsim_, ntime_
     logical :: details_
   contains
@@ -20,18 +21,18 @@ module input_data_m
     procedure :: Cu_sig
     procedure :: Ni_ave
     procedure :: Ni_sig
+    procedure :: fsurf
+    procedure :: RTndt0
+    procedure :: stress
+    procedure :: temp
   end type
 
   interface
 
-    module subroutine define(self, fn_IN, fsurf, RTndt0, stress, temp)
-
+    module subroutine define(self, fn_IN)
       implicit none
-
       class(input_data_t), intent(out) :: self
       character(len=64), intent(in) :: fn_IN
-      real, intent(out) :: fsurf, RTndt0
-      real, allocatable, intent(out) :: stress(:), temp(:)
     end subroutine
 
     pure module function a(self) result(self_a)
@@ -86,6 +87,30 @@ module input_data_m
       implicit none
       class(input_data_t), intent(in) :: self
       real self_Ni_sig
+    end function
+
+    pure module function fsurf(self) result(self_fsurf)
+      implicit none
+      class(input_data_t), intent(in) :: self
+      real self_fsurf
+    end function
+
+    pure module function RTndt0(self) result(self_RTndt0)
+      implicit none
+      class(input_data_t), intent(in) :: self
+      real self_RTndt0
+    end function
+
+    pure module function stress(self) result(self_stress)
+      implicit none
+      class(input_data_t), intent(in) :: self
+      real, allocatable :: self_stress(:)
+    end function
+
+    pure module function temp(self) result(self_temp)
+      implicit none
+      class(input_data_t), intent(in) :: self
+      real, allocatable :: self_temp(:)
     end function
 
   end interface
