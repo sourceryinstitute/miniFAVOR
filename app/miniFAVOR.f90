@@ -28,7 +28,7 @@
 
     ! Variables
     character(len=64) :: fn_IN
-    integer, parameter :: input_unit_reader=1
+    integer, parameter :: input_unit_reader=1, output_writer=1
     integer :: i, j
     type(random_samples_t), allocatable :: samples(:)
     type(data_partition_t) data_partition
@@ -88,8 +88,10 @@
                     integer, parameter :: nmaterials=2
 
                     associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
-                      call write_OUT( &
+                      if (me==output_writer) then
+                        call write_OUT( &
                         fn_IN(1:index(fn_IN, '.in')-1), input_data, R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
+                      end if
                     end associate
                   end block
                 end associate
