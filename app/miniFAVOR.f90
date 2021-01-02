@@ -45,10 +45,11 @@
       if  (me==input_unit_reader) then
         print *, 'Input file name:'
         read (input_unit,'(a)') fn_IN
+        call input_data%define(fn_IN)
       end if
 
       !Read input file
-      call input_data%define(fn_IN)
+      call co_broadcast(input_data, source_image = input_unit_reader)
 
       !Calculate applied stress intensity factor (SIF)
       associate( &
