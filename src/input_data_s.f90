@@ -24,15 +24,15 @@ contains
       write (n_ECHO, '(a25,i10)') 'Number of Time Steps: ', self%ntime()
 
       !Read in and echo type of output to be written
-      read (n_IN, *) details
-      write (n_ECHO, '(a25,l10)') 'Detailed output: ', details
+      read (n_IN, *) self%details_
+      write (n_ECHO, '(a25,l10)') 'Detailed output: ', self%details()
 
       !Read and echo embrittlement inputs
-      read (n_IN, *) Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
-      write (n_ECHO, '(a25,f10.3,a)') 'Copper Content: ', Cu_ave, ' %'
-      write (n_ECHO, '(a25,f10.3,a)') 'Nickel Content: ', Ni_ave, ' %'
-      write (n_ECHO, '(a25,f10.3,a)') 'Copper Content STDEV: ', Cu_sig, ' %'
-      write (n_ECHO, '(a25,f10.3,a)') 'Nickel Content STDEV: ', Ni_sig, ' %'
+      read (n_IN, *) self%Cu_ave_, self%Ni_ave_, self%Cu_sig_, self%Ni_sig_, fsurf, RTndt0
+      write (n_ECHO, '(a25,f10.3,a)') 'Copper Content: ', self%Cu_ave(), ' %'
+      write (n_ECHO, '(a25,f10.3,a)') 'Nickel Content: ', self%Ni_ave(), ' %'
+      write (n_ECHO, '(a25,f10.3,a)') 'Copper Content STDEV: ', self%Cu_sig(), ' %'
+      write (n_ECHO, '(a25,f10.3,a)') 'Nickel Content STDEV: ', self%Ni_sig(), ' %'
       write (n_ECHO, '(a25,f10.3,a)') 'ID Surface Fluence: ', fsurf, ' n/cm^2'
       write (n_ECHO, '(a25,f10.3,a)') 'Unirradiated RTndt: ', RTndt0, ' degF'
 
@@ -63,6 +63,26 @@ contains
 
     module procedure ntime
        self_ntime = self%ntime_
+    end procedure
+
+    module procedure details
+       self_details = self%details_
+    end procedure
+
+    module procedure Cu_ave
+       self_Cu_ave = self%Cu_ave_
+    end procedure
+
+    module procedure Cu_sig
+       self_Cu_sig = self%Cu_sig_
+    end procedure
+
+    module procedure Ni_ave
+       self_Ni_ave = self%Ni_ave_
+    end procedure
+
+    module procedure Ni_sig
+       self_Ni_sig = self%Ni_sig_
     end procedure
 
 end submodule input_data_s

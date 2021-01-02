@@ -35,9 +35,8 @@
     type(input_data_t) input_data
 
     ! Inputs
-    logical :: details
     real, dimension(:), allocatable :: stress, temp
-    real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
+    real :: fsurf, RTndt0
 
     ! Outputs
     real, dimension(:,:), allocatable :: cpi_hist
@@ -53,8 +52,7 @@
       end if
 
       !Read input file
-      call input_data%define(fn_IN, &
-          details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
+      call input_data%define(fn_IN, fsurf, RTndt0, stress, temp)
 
       !Calculate applied stress intensity factor (SIF)
       associate( &
@@ -71,7 +69,10 @@
         end do
 
         !Sample chemistry: assign Cu content and Ni content
-        associate(material_content => material_content_t(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples))
+        associate( &
+          material_content => &
+          material_content_t(input_data%Cu_ave(), input_data%Ni_ave(), input_data%Cu_sig(),input_data%Ni_sig(), samples) &
+        )
           associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
             !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
             associate(R_Tndt => RTndt(input_data%a(), Chemistry_factor, fsurf, RTndt0, samples%phi()))
@@ -89,7 +90,8 @@
 
                     associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
                       call write_OUT(fn_IN, &
-                        input_data%a(), input_data%b(), nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
+                        input_data%a(), input_data%b(), nsim, ntime, input_data%details(), &
+                        input_data%Cu_ave(), input_data%Ni_ave(), input_data%Cu_sig(), input_data%Ni_sig(), fsurf, RTndt0, &
                         R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
                     end associate
 
