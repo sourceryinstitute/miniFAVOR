@@ -33,27 +33,30 @@ Earlier versions might work.
 Prerequisites
 -------------
 1. [`gfortran`] 10.2 for compiling Fortran 2018.
-2. [`cmake`] 3.16 for building miniFAVOR executable programs.
+2. [`cmake`] 3.16 for generating Makefiles or project files.
 3. [`ford`] 6 for building documentation.
+4. [opencoarrays] 2.9.2 for building parallel executable programs.
 
-Cloning FAVOR
-------------------
-* To build miniFAVOR from source, clone this repository,
-  execute the following command at a command line:
-```
-git clone git@github.com:everythingfunctional/miniFAVOR.git
-```
+Cloning miniFAVOR
+-----------------
+To obtain miniFAVOR, execute the following command:
 
-Building, and testing miniFAVOR
----------------------------------------
+```
+git clone --recursive git@github.com:everythingfunctional/miniFAVOR.git
+```
+where `--rercursive` ensures that miniFAVOR's prerequisite repositories
+are downloaded.
+
+Building, and testing miniFAVOR on Linux or macOS
+-------------------------------------------------
 In a `bash` shell, enter the following commands:
 ```
 mkdir -p miniFAVOR/build
 cd miniFAVOR/build
-export FC=gfortran
+export FC=caf
 cmake ..
 make
-ctest -v
+ctest
 ```
 Please report any test failures by submitting a [new issue].
 
