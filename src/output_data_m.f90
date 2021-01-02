@@ -7,9 +7,9 @@ module output_data_m
 
   interface
 
-    module subroutine write_OUT(fn_IN, input_data, R_Tndt, CPI, CPI_avg, K_hist, Chemistry_content, Chemistry_factor)
+    module subroutine write_OUT(base_name, input_data, R_Tndt, CPI, CPI_avg, K_hist, Chemistry_content, Chemistry_factor)
       implicit none
-      character(len=64), intent(in) :: fn_IN
+      character(len=*), intent(in) :: base_name
       type(input_data_t), intent(in) :: input_data
       real, intent(in) :: K_hist(:), Chemistry_content(:,:), Chemistry_factor(:)
       real, intent(in) :: R_Tndt(:)

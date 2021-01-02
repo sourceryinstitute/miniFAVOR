@@ -6,12 +6,10 @@ contains
 
   module procedure write_OUT
 
-      character(len=64) :: fn_OUT, fn_DAT
       integer :: i, n_OUT, n_DAT
 
       !Open output file
-      fn_OUT = fn_IN(1:index(fn_IN, '.in')-1)//'.out'
-      open (newunit=n_OUT, file=fn_OUT, status='unknown', form='formatted')
+      open (newunit=n_OUT, file=base_name // '.out', status='unknown', form='formatted')
 
       !Write out important outputs summary
       write (n_OUT, '(a)') 'MiniFAVOR Output Summary'
@@ -37,8 +35,7 @@ contains
 
         !Write out detailed output to data file
         if (input_data%details()) then
-            fn_DAT = fn_IN(1:index(fn_IN, '.in')-1)//'.dat'
-            open (newunit=n_DAT, file=fn_DAT, status='unknown', form='formatted')
+            open (newunit=n_DAT, file=base_name // '.dat', status='unknown', form='formatted')
             write (n_DAT, '(a)') 'MiniFAVOR Detailed Output'
             write (n_DAT, '(a)') '/Applied SIF (ksi*in^0.5)/'
             write_SIF: do  i = 1, ntime

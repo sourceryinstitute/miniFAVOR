@@ -87,7 +87,8 @@
                     integer, parameter :: nmaterials=2
 
                     associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
-                      call write_OUT(fn_IN, input_data, R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
+                      call write_OUT( &
+                        fn_IN(1:index(fn_IN, '.in')-1), input_data, R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
                     end associate
                   end block
                 end associate
