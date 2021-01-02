@@ -26,6 +26,8 @@ module input_data_m
     procedure :: RTndt0
     procedure :: stress
     procedure :: temp
+    procedure :: assign
+    generic :: assignment(=) => assign
   end type
 
   interface
@@ -120,6 +122,10 @@ module input_data_m
       real, allocatable :: self_temp(:)
     end function
 
+    module subroutine assign(lhs, rhs)
+      class(input_data_t), intent(inout) :: lhs
+      type(input_data_t), intent(in) :: rhs
+    end subroutine
   end interface
 
 end module input_data_m

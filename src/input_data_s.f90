@@ -49,24 +49,50 @@ contains
 
     end procedure define
 
+    module procedure assign
+      lhs%a_       = rhs%a_
+      lhs%b_       = rhs%b_
+      lhs%Cu_ave_  = rhs%Cu_ave_
+      lhs%Ni_ave_  = rhs%Ni_ave_
+      lhs%Cu_sig_  = rhs%Cu_sig_
+      lhs%Ni_sig_  = rhs%Ni_sig_
+      lhs%fsurf_   = rhs%fsurf_
+      lhs%RTndt0_  = rhs%RTndt0_
+      lhs%stress_  = rhs%stress_
+      lhs%temp_    = rhs%temp_
+      lhs%nsim_    = rhs%nsim_
+      lhs%ntime_   = rhs%ntime_
+      lhs%details_ = rhs%details_
+    end procedure
+
     module procedure broadcast
+
       integer size_stress, size_temp
-      type(input_data_t) input_data
+      type(input_data_t) message ! work around gfortran lack of support for polymorphic co_broadcast argument
 
-      if (this_image() == source_image) then
-        size_stress = size(self%stress_)
-        size_temp = size(self%temp_)
-      end if
+      associate(me => this_image())
 
-      call co_broadcast(size_stress, source_image)
-      call co_broadcast(size_temp, source_image)
+        if (me == source_image) then
+          size_stress = size(self%stress_)
+          size_temp   = size(self%temp_)
+        end if
 
-      if (this_image() /= source_image) then
-        allocate(self%stress_(size_stress))
-        allocate(self%temp_(size_temp))
-      end if
+        call co_broadcast(size_stress, source_image)
+        call co_broadcast(size_temp, source_image)
 
-      call co_broadcast(input_data, source_image)
+        if (me == source_image) then
+          message = self
+        else
+          allocate(message%stress_(size_stress))
+          allocate(message%temp_(size_temp))
+        end if
+
+        call co_broadcast(message, source_image)
+
+        if (me /= source_image) self = message
+
+      end associate
+
     end procedure
 
     module procedure a
