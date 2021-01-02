@@ -12,6 +12,7 @@ module input_data_m
     logical :: details_
   contains
     procedure :: define
+    procedure :: broadcast
     procedure :: a
     procedure :: b
     procedure :: nsim
@@ -32,7 +33,13 @@ module input_data_m
     module subroutine define(self, fn_IN)
       implicit none
       class(input_data_t), intent(out) :: self
-      character(len=64), intent(in) :: fn_IN
+      character(len=*), intent(in) :: fn_IN
+    end subroutine
+
+    module subroutine broadcast(self, source_image)
+      implicit none
+      class(input_data_t), intent(inout) :: self
+      integer, intent(in) :: source_image
     end subroutine
 
     pure module function a(self) result(self_a)

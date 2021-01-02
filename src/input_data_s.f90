@@ -49,6 +49,26 @@ contains
 
     end procedure define
 
+    module procedure broadcast
+      integer size_stress, size_temp
+      type(input_data_t) input_data
+
+      if (this_image() == source_image) then
+        size_stress = size(self%stress_)
+        size_temp = size(self%temp_)
+      end if
+
+      call co_broadcast(size_stress, source_image)
+      call co_broadcast(size_temp, source_image)
+
+      if (this_image() /= source_image) then
+        allocate(self%stress_(size_stress))
+        allocate(self%temp_(size_temp))
+      end if
+
+      call co_broadcast(input_data, source_image)
+    end procedure
+
     module procedure a
        self_a = self%a_
     end procedure

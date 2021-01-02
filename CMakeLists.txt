@@ -41,7 +41,7 @@ if ("${PROJECT_SOURCE_DIR}" STREQUAL "${PROJECT_BINARY_DIR}")
 endif()
 
 if(CMAKE_Fortran_COMPILER_ID MATCHES GNU)
-  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Wall -std=f2018 -fcoarray=single")
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -Wall -std=f2018")
 elseif(CMAKE_Fortran_COMPILER_ID MATCHES Intel)
   set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} --standard-semenatics -stand f18")
 elseif(CMAKE_Fortran_COMPILER_ID MATCHES NAG)
