@@ -1,10 +1,10 @@
 module random_samples_m
-  use object_interface, only : object
+  use object_interface, only : object_t
   implicit none
   private
   public :: random_samples_t
 
-  type, extends(object) :: random_samples_t
+  type, extends(object_t) :: random_samples_t
     private
     real :: Cu_sig_local_
     real :: Cu_local_
