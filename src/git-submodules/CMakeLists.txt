@@ -16,8 +16,11 @@ target_link_libraries(vegetables
   PRIVATE strff
   PRIVATE iso_varying_string
 )
+if(CMAKE_Fortran_COMPILER_ID MATCHES Intel)
+  target_compile_definitions(vegetables PUBLIC AVOID_INTEL_BUG)
+endif()
 
-if (NOT Win32)
+if(NOT CMAKE_Fortran_COMPILER_ID MATCHES Intel)
 
   add_library(parff
    parff/src/parff.f90
