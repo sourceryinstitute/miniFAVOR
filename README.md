@@ -42,7 +42,7 @@ Cloning miniFAVOR
 To obtain miniFAVOR, execute the following command:
 
 ```
-git clone --recursive git@github.com:everythingfunctional/miniFAVOR.git
+git clone --recursive git@github.com:sourceryinstitute/miniFAVOR.git
 ```
 where `--rercursive` ensures that miniFAVOR's prerequisite repositories
 are downloaded.
