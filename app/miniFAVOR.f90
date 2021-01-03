@@ -66,10 +66,8 @@
         end do
 
         !Sample chemistry: assign Cu content and Ni content
-        associate( &
-          material_content => &
-          material_content_t(input_data%Cu_ave(), input_data%Ni_ave(), input_data%Cu_sig(),input_data%Ni_sig(), samples) &
-        )
+        associate(material_content => material_content_t( &
+            input_data%Cu_ave(),  input_data%Ni_ave(), input_data%Cu_sig(), input_data%Ni_sig(), samples))
           associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
             !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
             associate(R_Tndt => RTndt(input_data%a(), Chemistry_factor, input_data%fsurf(), input_data%RTndt0(), samples%phi()))
