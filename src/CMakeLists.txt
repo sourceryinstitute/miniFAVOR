@@ -11,6 +11,8 @@ add_library(minifav
   input_data_s.f90
   output_data_m.f90
   output_data_s.f90
+  detailed_output_m.f90
+  detailed_output_s.f90
 )
 target_link_libraries(minifav
   PRIVATE sourcery

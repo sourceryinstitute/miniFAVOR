@@ -122,7 +122,7 @@ module input_data_m
       real, allocatable :: self_temp(:)
     end function
 
-    module subroutine assign(lhs, rhs)
+    pure module subroutine assign(lhs, rhs)
       class(input_data_t), intent(inout) :: lhs
       type(input_data_t), intent(in) :: rhs
     end subroutine

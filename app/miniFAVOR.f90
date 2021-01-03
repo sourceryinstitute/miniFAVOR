@@ -21,7 +21,8 @@
     use material_content_m, only: material_content_t
     use data_partition_interface, only : data_partition_t => data_partition
     use input_data_m, only : input_data_t
-    use output_data_m, only : write_OUT
+    use output_data_m, only : output_data_t
+    use detailed_output_m, only : detailed_output_t
     use iso_fortran_env, only : input_unit
 
     implicit none
@@ -84,13 +85,28 @@
                 associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
                   block
                     integer, parameter :: nmaterials=2
+                    integer unit
 
-                    associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
-                      if (me==output_writer) then
-                        call write_OUT( &
-                        fn_IN(1:index(fn_IN, '.in')-1), input_data, R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
-                      end if
-                    end associate
+                    if (me==output_writer) then
+                      associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
+                        associate( &
+                          output_data => output_data_t( &
+                            input_data=input_data, R_Tndt=R_Tndt, CPI=CPI, CPI_avg=CPI_avg, K_hist=K_hist, &
+                            Chemistry_content=content, Chemistry_factor=Chemistry_factor &
+                          ), &
+                          base_name => fn_IN(1:index(fn_IN, '.in')-1) &
+                        )
+                          open(newunit=unit,  file=base_name//".out", status='unknown')
+                          write(unit, *) output_data
+                          close(unit)
+                          if (input_data%details()) then
+                            open(newunit=unit,  file=base_name//".dat", status='unknown')
+                            write(unit, *) detailed_output_t(output_data)
+                            close(unit)
+                          end if
+                        end associate
+                      end associate
+                    end if
                   end block
                 end associate
               end associate

@@ -4,57 +4,75 @@ submodule(output_data_m) output_data_s
 
 contains
 
-  module procedure write_OUT
+  module procedure new_output_data
+     new_output_data%input_data_ = input_data
+     new_output_data%R_Tndt_ = R_Tndt
+     new_output_data%K_hist_ = K_hist
+     new_output_data%Chemistry_content_ = Chemistry_content
+     new_output_data%Chemistry_factor_ = Chemistry_factor
+     new_output_data%CPI_ = CPI
+     new_output_data%CPI_avg_ = CPI_avg
+  end procedure
 
-      integer :: i, n_OUT, n_DAT
+  module procedure write_formatted
 
-      !Open output file
-      open (newunit=n_OUT, file=base_name // '.out', status='unknown', form='formatted')
+      associate(nsim => self%input_data_%nsim())
 
-      !Write out important outputs summary
-      write (n_OUT, '(a)') 'MiniFAVOR Output Summary'
-      write (n_OUT, '(a)') '/Key inputs/'
-      write (n_OUT, '(a25,f10.3,a)') 'Crack Depth: ', input_data%a(), ' in'
-      write (n_OUT, '(a25,f10.3,a)') 'Vessel Thickness: ', input_data%b(), ' in'
-      write (n_OUT, '(a25,i10)') 'Number of Simulations: ', input_data%nsim()
-      write (n_OUT, '(a25,f10.3,a)') 'Copper Content: ', input_data%Cu_ave(), ' %'
-      write (n_OUT, '(a25,f10.3,a)') 'Nickel Content: ', input_data%Ni_ave(), ' %'
-      write (n_OUT, '(a25,f10.3,a)') 'Copper Content STDEV: ', input_data%Cu_sig(), ' %'
-      write (n_OUT, '(a25,f10.3,a)') 'Nickel Content STDEV: ', input_data%Ni_sig(), ' %'
-      write (n_OUT, '(a25,f10.3,a)') 'ID Surface Fluence: ', input_data%fsurf(), ' n/cm^2'
-      write (n_OUT, '(a25,f10.3,a)') 'Unirradiated RTndt: ', input_data%RTndt0(), ' degF'
-      write (n_OUT, '(a)') '/Results/'
-      associate(nsim => input_data%nsim(), ntime => input_data%ntime())
-        write (n_OUT, '(a25,f10.3)') 'Final CPI: ', CPI_avg(nsim)
-        write (n_OUT, '(a25,f10.3,a)') 'Minimum crack tip RTndt: ', &
-            minval(R_Tndt), ' degF'
-        write (n_OUT, '(a25,f10.3,a)') 'Maximum crack tip  RTndt: ', &
-            maxval(R_Tndt), ' degF'
-        write (n_OUT, '(a25,f10.3,a)') 'Average crack tip RTndt: ', &
-            sum(R_Tndt)/nsim, ' degF'
+        !Write important outputs summary
+        write (unit, '(a)') 'MiniFAVOR Output Summary', new_line('a')
+        write (unit, '(a)') '/Key inputs/', new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Crack Depth: ', self%input_data_%a(), ' in', new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Vessel Thickness: ', self%input_data_%b(), ' in', new_line('a')
+        write (unit, '(a25,i10)') 'Number of Simulations: ', nsim, new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Copper Content: ', self%input_data_%Cu_ave(), ' %', new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Nickel Content: ', self%input_data_%Ni_ave(), ' %', new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Copper Content STDEV: ', self%input_data_%Cu_sig(), ' %', new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Nickel Content STDEV: ', self%input_data_%Ni_sig(), ' %', new_line('a')
+        write (unit, '(a25,f10.3,a)') 'ID Surface Fluence: ', self%input_data_%fsurf(), ' n/cm^2', new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Unirradiated RTndt: ', self%input_data_%RTndt0(), ' degF', new_line('a')
+        write (unit, '(a)') '/Results/', new_line('a')
 
-        !Write out detailed output to data file
-        if (input_data%details()) then
-            open (newunit=n_DAT, file=base_name // '.dat', status='unknown', form='formatted')
-            write (n_DAT, '(a)') 'MiniFAVOR Detailed Output'
-            write (n_DAT, '(a)') '/Applied SIF (ksi*in^0.5)/'
-            write_SIF: do  i = 1, ntime
-                write (n_DAT, '(f10.3)') K_hist(i)
-            end do write_SIF
-            write (n_DAT, '(a)') '/Chemistry Results'
-            write (n_DAT, '(a)') 'Cu content (%),  Ni Content (%), Chemistry Factor CF'
-            write_chem: do  i = 1, nsim
-                write (n_DAT, '(3f10.3)') Chemistry_content(i,1), Chemistry_content(i,2), Chemistry_factor(i)
-            end do write_chem
-            write (n_DAT, '(a)') '/Vessel CPI data'
-            write (n_DAT, '(a)') 'Vessel RTndt (degF),  Vessel CPI, Cumulative Average CPI'
-            write_CPI: do  i = 1, nsim
-                write (n_DAT, '(3f10.3)') R_Tndt(i), CPI(i), CPI_avg(i)
-            end do write_CPI
-        end if
+        write (unit, '(a25,f10.3)') 'Final CPI: ', self%CPI_avg_(nsim), new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Minimum crack tip RTndt: ', &
+            minval(self%R_Tndt_), ' degF', new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Maximum crack tip  RTndt: ', &
+            maxval(self%R_Tndt_), ' degF', new_line('a')
+        write (unit, '(a25,f10.3,a)') 'Average crack tip RTndt: ', &
+            sum(self%R_Tndt_)/nsim, ' degF', new_line('a')
       end associate
 
+  end procedure write_formatted
 
-  end procedure write_OUT
+  module procedure R_Tndt
+   my_R_Tndt = self%R_Tndt_
+  end procedure
+
+  module procedure K_hist
+   my_K_hist = self%K_hist_
+  end procedure
+
+  module procedure Chemistry_content
+    my_Chemistry_content = self%Chemistry_content_
+  end procedure
+
+  module procedure Chemistry_factor
+    my_Chemistry_factor = self%Chemistry_factor_
+  end procedure
+
+  module procedure CPI
+    my_CPI = self%CPI_
+  end procedure
+
+  module procedure CPI_avg
+    my_CPI_avg = self%CPI_avg_
+  end procedure
+
+  module procedure nsim
+    my_nsim = self%input_data_%nsim()
+  end procedure
+
+  module procedure ntime
+    my_ntime = self%input_data_%ntime()
+  end procedure
 
 end submodule output_data_s

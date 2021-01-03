@@ -7,5 +7,9 @@ rm -f test.dat test.echo test.out
 test.in
 EOF
 diff -b test.echo.orig test.echo
-numdiff -r 1.0e-6 test.out.orig test.out
-numdiff -r 1.0e-6 test.dat.orig test.dat
+
+awk 'NF' test.out > test.out.no-blank-lines
+awk 'NF' test.dat > test.dat.no-blank-lines
+
+numdiff -r 1.0e-6 test.out.orig test.out.no-blank-lines
+numdiff -r 1.0e-6 test.dat.orig test.dat.no-blank-lines
