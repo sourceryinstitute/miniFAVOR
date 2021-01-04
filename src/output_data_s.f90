@@ -19,26 +19,26 @@ contains
       associate(nsim => self%input_data_%nsim())
 
         !Write important outputs summary
-        write (unit, '(a)') 'MiniFAVOR Output Summary', new_line('a')
-        write (unit, '(a)') '/Key inputs/', new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Crack Depth: ', self%input_data_%a(), ' in', new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Vessel Thickness: ', self%input_data_%b(), ' in', new_line('a')
-        write (unit, '(a25,i10)') 'Number of Simulations: ', nsim, new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Copper Content: ', self%input_data_%Cu_ave(), ' %', new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Nickel Content: ', self%input_data_%Ni_ave(), ' %', new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Copper Content STDEV: ', self%input_data_%Cu_sig(), ' %', new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Nickel Content STDEV: ', self%input_data_%Ni_sig(), ' %', new_line('a')
-        write (unit, '(a25,f10.3,a)') 'ID Surface Fluence: ', self%input_data_%fsurf(), ' n/cm^2', new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Unirradiated RTndt: ', self%input_data_%RTndt0(), ' degF', new_line('a')
-        write (unit, '(a)') '/Results/', new_line('a')
+        write (unit, '(2a)') 'MiniFAVOR Output Summary', new_line('a')
+        write (unit, '(2a)') '/Key inputs/', new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'Crack Depth: ', self%input_data_%a(), ' in', new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'Vessel Thickness: ', self%input_data_%b(), ' in', new_line('a')
+        write (unit, '(a25,i10,a)') 'Number of Simulations: ', nsim, new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'Copper Content: ', self%input_data_%Cu_ave(), ' %', new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'Nickel Content: ', self%input_data_%Ni_ave(), ' %', new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'Copper Content STDEV: ', self%input_data_%Cu_sig(), ' %', new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'Nickel Content STDEV: ', self%input_data_%Ni_sig(), ' %', new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'ID Surface Fluence: ', self%input_data_%fsurf(), ' n/cm^2', new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'Unirradiated RTndt: ', self%input_data_%RTndt0(), ' degF', new_line('a')
+        write (unit, '(2a)') '/Results/', new_line('a')
 
-        write (unit, '(a25,f10.3)') 'Final CPI: ', self%CPI_avg_(nsim), new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Minimum crack tip RTndt: ', &
+        write (unit, '(a25,f10.3,a)') 'Final CPI: ', self%CPI_avg_(nsim), new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'Minimum crack tip RTndt: ', &
             minval(self%R_Tndt_), ' degF', new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Maximum crack tip  RTndt: ', &
+        write (unit, '(a25,f10.3,2a)') 'Maximum crack tip  RTndt: ', &
             maxval(self%R_Tndt_), ' degF', new_line('a')
-        write (unit, '(a25,f10.3,a)') 'Average crack tip RTndt: ', &
-            sum(self%R_Tndt_)/nsim, ' degF', new_line('a')
+        write (unit, '(a25,f10.3,2a)') 'Average crack tip RTndt: ', &
+            sum(self%R_Tndt_)/nsim, ' degF', new_line('2a')
       end associate
 
   end procedure write_formatted
