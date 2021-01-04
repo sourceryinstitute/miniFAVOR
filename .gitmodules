@@ -12,4 +12,4 @@
 	url = https://gitlab.com/everythingfunctional/parff
 [submodule "src/git-submodules/sourcery"]
 	path = src/git-submodules/sourcery
-	url = git@github.com:sourceryinstitute/sourcery
+	url = https://github.com/sourceryinstitute/sourcery
