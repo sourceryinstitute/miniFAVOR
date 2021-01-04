@@ -100,7 +100,7 @@ endforeach()
 enable_testing()
 
 add_test(NAME integration_test
-  COMMAND ${CMAKE_BINARY_DIR}/tests/integration/run_test.sh
+  COMMAND cafrun -n 2 ${CMAKE_BINARY_DIR}/tests/integration/test_whole_shebang
   WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/tests/integration
 )
 

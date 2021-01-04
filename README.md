@@ -33,9 +33,9 @@ Earlier versions might work.
 Prerequisites
 -------------
 1. [`gfortran`] 10.2 for compiling Fortran 2018.
-2. [`cmake`] 3.16 for generating Makefiles or project files.
+2. [`cmake`] 3.16 for generating Makefiles or IDE project files.
 3. [`ford`] 6 for building documentation.
-4. [opencoarrays] 2.9.2 for building parallel executable programs.
+4. [opencoarrays] 2.9.2 for compiling and launching parallel executable programs.
 
 Cloning miniFAVOR
 -----------------
