@@ -1,6 +1,7 @@
 module output_data_m
   use input_data_m, only : input_data_t
   use oracle_interface, only : oracle_t
+  use random_samples_m, only: random_samples_t
   implicit none
 
   private
@@ -32,6 +33,12 @@ module output_data_m
 
     pure module function default_constructor() result(new_output_data_t)
       type(output_data_t) new_output_data_t
+    end function
+
+    module function whole_shebang(input_data, random_samples) result(new_output_data)
+      type(input_data_t), intent(in) :: input_data
+      type(random_samples_t), intent(in) :: random_samples(:)
+      type(output_data_t) :: new_output_data
     end function
 
     pure module function new_output_data(input_data, R_Tndt, K_hist, Chemistry_content, Chemistry_factor, CPI, CPI_avg)

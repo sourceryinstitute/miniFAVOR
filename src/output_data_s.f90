@@ -15,6 +15,58 @@ contains
      new_output_data_t%CPI_avg_ = [0.]
   end procedure
 
+  module procedure whole_shebang
+    use calc_RTndt, only : RTndt, CF
+    use calc_K, only : Ki_t
+    use calc_cpi, only : cpi_t
+    use material_content_m, only: material_content_t
+
+    real, dimension(:,:), allocatable :: cpi_hist
+    integer :: i, j
+
+    associate( &
+      K_hist => Ki_t(input_data%a(), input_data%b(), input_data%stress()), &
+      nsim => input_data%nsim(), &
+      ntime => input_data%ntime() &
+    )
+
+      !Sample chemistry: assign Cu content and Ni content
+      associate(material_content => material_content_t( &
+          input_data%Cu_ave(),  input_data%Ni_ave(), input_data%Cu_sig(), input_data%Ni_sig(), random_samples))
+        associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
+          !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
+          associate(R_Tndt => RTndt( &
+              input_data%a(), Chemistry_factor, input_data%fsurf(), input_data%RTndt0(), random_samples%phi()) &
+          )
+            !Start looping over number of simulations
+            allocate(cpi_hist(nsim, ntime))
+            do concurrent(i = 1:nsim, j = 1:ntime)
+              ! Instantaneous cpi(t)
+              associate(temp => input_data%temp())
+                cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
+              end associate
+            end do
+            associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
+              ! Moving average CPI for all trials
+              associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
+                block
+                  integer, parameter :: nmaterials=2
+
+                  associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
+                    new_output_data = output_data_t( &
+                        input_data=input_data, R_Tndt=R_Tndt, CPI=CPI, CPI_avg=CPI_avg, K_hist=K_hist, &
+                        Chemistry_content=content, Chemistry_factor=Chemistry_factor &
+                      )
+                  end associate
+                end block
+              end associate
+            end associate
+          end associate
+        end associate
+      end associate
+    end associate
+  end procedure
+
   module procedure assign
 
     call assert(same_type_as(self, rhs), "output_data_t%assign: same_type_as(self, rhs)")

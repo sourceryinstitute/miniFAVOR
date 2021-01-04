@@ -30,13 +30,11 @@
     ! Variables
     character(len=64) :: fn_IN
     integer, parameter :: input_unit_reader=1, output_writer=1
-    integer :: i, j
+    integer :: i
     type(random_samples_t), allocatable :: samples(:)
     type(data_partition_t) data_partition
     type(input_data_t) input_data
 
-    ! Outputs
-    real, dimension(:,:), allocatable :: cpi_hist
 
     ! Body of miniFAVOR
 
@@ -54,9 +52,7 @@
 
       !Calculate applied stress intensity factor (SIF)
       associate( &
-        K_hist => Ki_t(input_data%a(), input_data%b(), input_data%stress()), &
-        nsim => input_data%nsim(), &
-        ntime => input_data%ntime() &
+        nsim => input_data%nsim() &
       )
 
         call data_partition%define_partitions(cardinality=nsim)
@@ -66,52 +62,24 @@
           call samples(i)%define()
         end do
 
-        !Sample chemistry: assign Cu content and Ni content
-        associate(material_content => material_content_t( &
-            input_data%Cu_ave(),  input_data%Ni_ave(), input_data%Cu_sig(), input_data%Ni_sig(), samples))
-          associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
-            !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-            associate(R_Tndt => RTndt(input_data%a(), Chemistry_factor, input_data%fsurf(), input_data%RTndt0(), samples%phi()))
-              !Start looping over number of simulations
-              allocate(cpi_hist(nsim, ntime))
-              do concurrent(i = 1:nsim, j = 1:ntime)
-                ! Instantaneous cpi(t)
-                associate(temp => input_data%temp())
-                  cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
-                end associate
-              end do
-              associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
-                ! Moving average CPI for all trials
-                associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
-                  block
-                    integer, parameter :: nmaterials=2
-                    integer unit
+        associate( &
+            output_data => output_data_t(input_data, samples), &
+            base_name => fn_IN(1:index(fn_IN, '.in')-1) &
+        )
+          if (me==output_writer) then
+            block
+              integer :: unit
 
-                    if (me==output_writer) then
-                      associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
-                        associate( &
-                          output_data => output_data_t( &
-                            input_data=input_data, R_Tndt=R_Tndt, CPI=CPI, CPI_avg=CPI_avg, K_hist=K_hist, &
-                            Chemistry_content=content, Chemistry_factor=Chemistry_factor &
-                          ), &
-                          base_name => fn_IN(1:index(fn_IN, '.in')-1) &
-                        )
-                          open(newunit=unit,  file=base_name//".out", status='unknown')
-                          write(unit, '(DT)') output_data
-                          close(unit)
-                          if (input_data%details()) then
-                            open(newunit=unit,  file=base_name//".dat", status='unknown')
-                            write(unit, '(DT)') detailed_output_t(output_data)
-                            close(unit)
-                          end if
-                        end associate
-                      end associate
-                    end if
-                  end block
-                end associate
-              end associate
-            end associate
-          end associate
+              open(newunit=unit,  file=base_name//".out", status='unknown')
+              write(unit, '(DT)') output_data
+              close(unit)
+              if (input_data%details()) then
+                  open(newunit=unit,  file=base_name//".dat", status='unknown')
+                  write(unit, '(DT)') detailed_output_t(output_data)
+                  close(unit)
+              end if
+            end block
+          end if
         end associate
       end associate
     end associate
