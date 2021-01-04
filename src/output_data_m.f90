@@ -1,11 +1,11 @@
 module output_data_m
   use input_data_m, only : input_data_t
-  use object_interface, only : object_t
+  use oracle_interface, only : oracle_t
   implicit none
 
   private
 
-  type, public, extends(object_t) :: output_data_t
+  type, public, extends(oracle_t) :: output_data_t
     private
     type(input_data_t) input_data_
     real ,allocatable :: R_Tndt_(:)
@@ -13,6 +13,10 @@ module output_data_m
     real ,allocatable :: CPI_(:)
     real ,allocatable :: CPI_avg_(:)
   contains
+    procedure :: assign
+    generic :: assignment(=) => assign
+    procedure :: norm
+    procedure :: subtract
     procedure :: write_formatted
     procedure :: R_Tndt
     procedure :: K_hist
@@ -26,6 +30,10 @@ module output_data_m
 
   interface output_data_t
 
+    pure module function default_constructor() result(new_output_data_t)
+      type(output_data_t) new_output_data_t
+    end function
+
     pure module function new_output_data(input_data, R_Tndt, K_hist, Chemistry_content, Chemistry_factor, CPI, CPI_avg)
       type(input_data_t), intent(in) :: input_data
       real, intent(in) :: R_Tndt(:)
@@ -38,6 +46,27 @@ module output_data_m
   end interface
 
   interface
+
+    module subroutine assign(self, rhs)
+      implicit none
+      class(output_data_t), intent(inout) :: self
+      class(oracle_t), intent(in) :: rhs
+    end subroutine
+
+    module function subtract(self, rhs) result(difference)
+      !! result has components corresponding to subtracting rhs's components fron self object's components
+      implicit none
+      class(output_data_t), intent(in) :: self
+      class(oracle_t), intent(in) :: rhs
+      class(oracle_t), allocatable :: difference
+    end function
+
+    pure module function norm(self) result(norm_of_self)
+      !! result is a norm of the array formed by concatenating the real components of self object
+      implicit none
+      class(output_data_t), intent(in) :: self
+      real norm_of_self
+    end function
 
     module subroutine write_formatted(self, unit, iotype, v_list, iostat, iomsg)
       implicit none

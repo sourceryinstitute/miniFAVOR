@@ -1,8 +1,67 @@
 submodule(output_data_m) output_data_s
+  use assertions_interface, only : assert
 
   implicit none
 
 contains
+
+  module procedure default_constructor
+     new_output_data_t%input_data_ = input_data_t()
+     new_output_data_t%R_Tndt_ = [0.]
+     new_output_data_t%K_hist_ = [0.]
+     new_output_data_t%Chemistry_content_ = reshape([0.], [1,1])
+     new_output_data_t%Chemistry_factor_ = [0.]
+     new_output_data_t%CPI_ = [0.]
+     new_output_data_t%CPI_avg_ = [0.]
+  end procedure
+
+  module procedure assign
+
+    call assert(same_type_as(self, rhs), "output_data_t%assign: same_type_as(self, rhs)")
+
+    select type(rhs)
+      type is(output_data_t)
+        self%input_data_          = rhs%input_data_
+        self%R_Tndt_              = rhs%R_Tndt_
+        self%K_hist_              = rhs% K_hist_
+        self%Chemistry_content_   = rhs%Chemistry_content_
+        self%Chemistry_factor_    = rhs%Chemistry_factor_
+        self%CPI_                 = rhs%CPI_
+        self%CPI_avg_             = rhs%CPI_avg_
+      class default
+        error stop "output_data_t%assign: unsupported rhs type"
+    end select
+
+  end procedure
+
+  module procedure norm
+    !! compute L-infinity norm
+    norm_of_self = maxval(abs([ &
+      self%input_data_%norm(), self%R_Tndt_, self%K_hist_ , self%Chemistry_content_, self%Chemistry_factor_, self%CPI_, &
+      self%CPI_avg_ &
+    ]))
+  end procedure
+
+  module procedure subtract
+    type(output_data_t) local_difference
+
+    call assert(same_type_as(self, rhs), "output_data_t%subtract: same_type_as(self, rhs)")
+
+    select type(rhs)
+      type is(output_data_t)
+        local_difference%input_data_        = self%input_data_          - rhs%input_data_
+        local_difference%R_Tndt_            = self%R_Tndt_              - rhs%R_Tndt_
+        local_difference%K_hist_            = self%K_hist_              - rhs% K_hist_
+        local_difference%Chemistry_content_ = self%Chemistry_content_   - rhs%Chemistry_content_
+        local_difference%Chemistry_factor_  = self%Chemistry_factor_    - rhs%Chemistry_factor_
+        local_difference%CPI_               = self%CPI_                 - rhs%CPI_
+        local_difference%CPI_avg_           = self%CPI_avg_             - rhs%CPI_avg_
+      class default
+        error stop "output_data_t%subtract: rhs type unsupported"
+    end select
+
+    difference = local_difference
+  end procedure
 
   module procedure new_output_data
      new_output_data%input_data_ = input_data

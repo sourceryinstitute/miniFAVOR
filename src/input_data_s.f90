@@ -49,6 +49,22 @@ contains
 
     end procedure define
 
+    module procedure default_input_data_t
+      new_input_data_t%a_       = 0.
+      new_input_data_t%b_       = 0.
+      new_input_data_t%Cu_ave_  = 0.
+      new_input_data_t%Ni_ave_  = 0.
+      new_input_data_t%Cu_sig_  = 0.
+      new_input_data_t%Ni_sig_  = 0.
+      new_input_data_t%fsurf_   = 0.
+      new_input_data_t%RTndt0_  = 0.
+      new_input_data_t%stress_  = [0.]
+      new_input_data_t%temp_    = [0.]
+      new_input_data_t%nsim_    = 0
+      new_input_data_t%ntime_   = 0
+      new_input_data_t%details_ = .true.
+    end procedure
+
     module procedure assign
       lhs%a_       = rhs%a_
       lhs%b_       = rhs%b_
@@ -63,6 +79,29 @@ contains
       lhs%nsim_    = rhs%nsim_
       lhs%ntime_   = rhs%ntime_
       lhs%details_ = rhs%details_
+    end procedure
+
+    module procedure norm
+      norm_of_self = maxval(abs([ &
+        self%a_, self%b_, self%Cu_ave_, self%Ni_ave_, self%Cu_sig_, self%Ni_sig_, self%fsurf_ , self%RTndt0_, self%stress_, &
+        self%temp_, real(self%nsim_), real(self%ntime_), merge(0.,huge(0.), self%details_) &
+      ]))
+    end procedure
+
+    module procedure subtract
+      difference%a_       = self%a_       - rhs%a_
+      difference%b_       = self%b_       - rhs%b_
+      difference%Cu_ave_  = self%Cu_ave_  - rhs%Cu_ave_
+      difference%Ni_ave_  = self%Ni_ave_  - rhs%Ni_ave_
+      difference%Cu_sig_  = self%Cu_sig_  - rhs%Cu_sig_
+      difference%Ni_sig_  = self%Ni_sig_  - rhs%Ni_sig_
+      difference%fsurf_   = self%fsurf_   - rhs%fsurf_
+      difference%RTndt0_  = self%RTndt0_  - rhs%RTndt0_
+      difference%stress_  = self%stress_  - rhs%stress_
+      difference%temp_    = self%temp_    - rhs%temp_
+      difference%nsim_    = self%nsim_    - rhs%nsim_
+      difference%ntime_   = self%ntime_   - rhs%ntime_
+      difference%details_ = self%details_ .eqv. rhs%details_
     end procedure
 
     module procedure broadcast

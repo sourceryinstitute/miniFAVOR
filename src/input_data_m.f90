@@ -11,6 +11,9 @@ module input_data_m
     integer :: nsim_, ntime_
     logical :: details_
   contains
+    procedure :: norm
+    procedure :: subtract
+    generic :: operator(-) => subtract
     procedure :: define
     procedure :: broadcast
     procedure :: a
@@ -30,7 +33,29 @@ module input_data_m
     generic :: assignment(=) => assign
   end type
 
+  interface input_data_t
+
+    pure module function default_input_data_t() result(new_input_data_t)
+      implicit none
+      type(input_data_t) new_input_data_t
+    end function
+
+  end interface
+
   interface
+
+    pure module function norm(self) result(norm_of_self)
+      implicit none
+      class(input_data_t), intent(in) :: self
+      real norm_of_self
+    end function
+
+    pure module function subtract(self, rhs) result(difference)
+      implicit none
+      class(input_data_t), intent(in) :: self
+      type(input_data_t), intent(in) :: rhs
+      type(input_data_t) difference
+    end function
 
     module subroutine define(self, fn_IN)
       implicit none

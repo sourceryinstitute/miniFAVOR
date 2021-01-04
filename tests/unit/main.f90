@@ -5,14 +5,20 @@ program main
     call run()
 contains
     subroutine run()
+        use input_data_tests, only: &
+                input_data_tests_test_input_data => test_input_data
+        use output_data_tests, only: &
+                output_data_tests_test_output_data => test_output_data
         use random_samples_tests, only: &
                 random_samples_tests_test_random_samples => test_random_samples
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(1)
+        type(test_item_t) :: individual_tests(3)
 
-        individual_tests(1) = random_samples_tests_test_random_samples()
+        individual_tests(1) = input_data_tests_test_input_data()
+        individual_tests(2) = output_data_tests_test_output_data()
+        individual_tests(3) = random_samples_tests_test_random_samples()
         tests = test_that(individual_tests)
 
         call run_tests(tests)
