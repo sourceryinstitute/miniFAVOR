@@ -97,11 +97,11 @@
                           base_name => fn_IN(1:index(fn_IN, '.in')-1) &
                         )
                           open(newunit=unit,  file=base_name//".out", status='unknown')
-                          write(unit, *) output_data
+                          write(unit, '(DT)') output_data
                           close(unit)
                           if (input_data%details()) then
                             open(newunit=unit,  file=base_name//".dat", status='unknown')
-                            write(unit, *) detailed_output_t(output_data)
+                            write(unit, '(DT)') detailed_output_t(output_data)
                             close(unit)
                           end if
                         end associate

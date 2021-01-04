@@ -40,7 +40,7 @@ contains
         associate(R_Tndt => self%R_Tndt(), CPI => self%CPI(), CPI_Avg => self%CPI_avg())
           write_CPI: &
           do i = 1, nsim
-            write (unit, '(3f10.3,2a)') R_Tndt(i), CPI(i), CPI_avg(i), new_line('a')
+            write (unit, '(3f10.3,a)') R_Tndt(i), CPI(i), CPI_avg(i), merge(' ', new_line('a'), i==nsim)
           end do write_CPI
         end associate
 

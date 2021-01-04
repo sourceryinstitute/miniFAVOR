@@ -37,8 +37,8 @@ contains
             minval(self%R_Tndt_), ' degF', new_line('a')
         write (unit, '(a25,f10.3,2a)') 'Maximum crack tip  RTndt: ', &
             maxval(self%R_Tndt_), ' degF', new_line('a')
-        write (unit, '(a25,f10.3,2a)') 'Average crack tip RTndt: ', &
-            sum(self%R_Tndt_)/nsim, ' degF', new_line('2a')
+        write (unit, '(a25,f10.3,a)') 'Average crack tip RTndt: ', &
+            sum(self%R_Tndt_)/nsim, ' degF'
       end associate
 
   end procedure write_formatted
