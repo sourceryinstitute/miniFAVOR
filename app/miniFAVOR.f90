@@ -19,7 +19,6 @@
     use calc_cpi, only : cpi_t
     use random_samples_m, only: random_samples_t
     use material_content_m, only: material_content_t
-    use data_partition_interface, only : data_partition_t => data_partition
     use input_data_m, only : input_data_t
     use output_data_m, only : output_data_t
     use detailed_output_m, only : detailed_output_t
@@ -32,9 +31,7 @@
     integer, parameter :: input_unit_reader=1, output_writer=1
     integer :: i
     type(random_samples_t), allocatable :: samples(:)
-    type(data_partition_t) data_partition
     type(input_data_t) input_data
-
 
     ! Body of miniFAVOR
 
@@ -51,11 +48,7 @@
       call input_data%broadcast(source_image = input_unit_reader)
 
       !Calculate applied stress intensity factor (SIF)
-      associate( &
-        nsim => input_data%nsim() &
-      )
-
-        call data_partition%define_partitions(cardinality=nsim)
+      associate(nsim => input_data%nsim())
 
         allocate(samples(nsim))
         do i = 1, nsim ! This cannot be parallelized or reordered without the results changing
@@ -68,7 +61,7 @@
         )
           if (me==output_writer) then
             block
-              integer :: unit
+              integer unit
 
               open(newunit=unit,  file=base_name//".out", status='unknown')
               write(unit, '(DT)') output_data
