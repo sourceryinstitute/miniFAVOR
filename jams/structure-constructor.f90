@@ -12,7 +12,7 @@ end module
 program main
   use material_m, only : material_content_t
   implicit none
-  type(material_content_t) vessel ! = material_content_t(0.3, 0.4)
+  type(material_content_t) :: vessel = material_content_t(Cu=0.4, Ni=0.3)
 
   real, parameter :: pi=3.141592654
 
