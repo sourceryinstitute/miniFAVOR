@@ -1,13 +1,13 @@
-module calc_K
+module reference_calc_K
 
 implicit none
 
     contains
 
     !Function to calculate K(t)
-    elemental function Ki_t(a, b, stress)
+    function Ki_t(a, b, stress)
 
-        use constants_h, only: Pi
+        use reference_constants_h, only: Pi
 
         !Variables
         real :: Ki_t
@@ -19,4 +19,4 @@ implicit none
 
     end function Ki_t
 
-end module calc_K
+end module

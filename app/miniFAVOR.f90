@@ -1,4 +1,4 @@
-!  miniFAVOR.f90 
+!  miniFAVOR.f90
 !
 !  FUNCTIONS:
 !  miniFAVOR - Entry point of console application.
@@ -13,76 +13,75 @@
 !****************************************************************************
 
     program miniFAVOR
-    
-    use I_O
-    use inputs_h
-    use outputs_h
-    use calc_RTndt
-    use calc_K
-    use calc_cpi
+
+    use calc_RTndt, only : RTndt, CF
+    use calc_K, only : Ki_t
+    use calc_cpi, only : cpi_t
+    use random_samples_m, only: random_samples_t
+    use material_content_m, only: material_content_t
+    use data_partition_interface, only : data_partition_t => data_partition
+    use input_data_m, only : input_data_t
+    use output_data_m, only : output_data_t
+    use detailed_output_m, only : detailed_output_t
+    use iso_fortran_env, only : input_unit
 
     implicit none
 
     ! Variables
     character(len=64) :: fn_IN
-    integer, parameter :: n_IN = 15
-    integer, parameter :: n_ECHO = n_IN + 1
-    integer, parameter :: n_OUT = n_IN + 2
-    integer, parameter :: n_DAT = n_IN + 3
-    integer :: i, j
-    
+    integer, parameter :: input_unit_reader=1, output_writer=1
+    integer :: i
+    type(random_samples_t), allocatable :: samples(:)
+    type(data_partition_t) data_partition
+    type(input_data_t) input_data
+
+
     ! Body of miniFAVOR
-    
-    !Get input file name
-    print *, 'Input file name:'
-    read (*,'(a)') fn_IN
-    
-    !Read input file
-    call read_IN(fn_IN, n_IN, n_ECHO)
-    
-    !Allocate output arrays
-    allocate(K_hist(ntime))
-    allocate(Chemistry(nsim,3))
-    allocate(cpi_hist(nsim, ntime))
-    allocate(CPI_results(nsim,3))
-    
-    !Initialize output arrays
-    K_hist =  0.0
-    Chemistry = 0.0
-    cpi_hist = 0.0
-    CPI_results = 0.0
-    
-    !Calculate applied stress intensity factor (SIF)
-    SIF_loop: do j = 1, ntime
-        K_hist(j) = Ki_t(a, b, stress(j))
-    end do SIF_loop
-        
-    !Start looping over number of simulations
-    Vessel_loop: do i = 1, nsim
-        
-        !Sample chemistry: Chemistry(i,1) is Cu content, Chemistry(i,2) is Ni content
-        call sample_chem(Cu_ave, Ni_ave, Cu_sig, Ni_sig, Chemistry(i,1), Chemistry(i,2))
-        
-        !Calculate chemistry factor: Chemistry(i,3) is chemistry factor
-        Chemistry(i,3) = CF(Chemistry(i,1), Chemistry(i,2))
-        
-        !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-        CPI_results(i,1) = RTndt(a, Chemistry(i,3), fsurf, RTndt0)
-        
-        !Start time loop
-        Time_loop: do j = 1, ntime
-            !Calculate instantaneous cpi(t)
-            cpi_hist(i,j) = cpi_t(K_hist(j), CPI_results(i,1), temp(j))
-        end do Time_loop
-        
-        !Calculate CPI for vessel 'i'
-        CPI_results(i,2) = maxval(cpi_hist(i,:))
-        
-        !Calculate moving average CPI for trials executed so far
-        CPI_results(i,3) = sum(CPI_results(:,2))/i
-                
-    end do Vessel_loop
-    
-    call write_OUT(fn_IN, n_OUT, n_DAT)
-    
+
+    associate(me=>this_image())
+
+      !Get input file name
+      if  (me==input_unit_reader) then
+        print *, 'Input file name:'
+        read (input_unit,'(a)') fn_IN
+        !Read input file
+        call input_data%define(fn_IN)
+      end if
+
+      call input_data%broadcast(source_image = input_unit_reader)
+
+      !Calculate applied stress intensity factor (SIF)
+      associate( &
+        nsim => input_data%nsim() &
+      )
+
+        call data_partition%define_partitions(cardinality=nsim)
+
+        allocate(samples(nsim))
+        do i = 1, nsim ! This cannot be parallelized or reordered without the results changing
+          call samples(i)%define()
+        end do
+
+        associate( &
+            output_data => output_data_t(input_data, samples), &
+            base_name => fn_IN(1:index(fn_IN, '.in')-1) &
+        )
+          if (me==output_writer) then
+            block
+              integer :: unit
+
+              open(newunit=unit,  file=base_name//".out", status='unknown')
+              write(unit, '(DT)') output_data
+              close(unit)
+              if (input_data%details()) then
+                  open(newunit=unit,  file=base_name//".dat", status='unknown')
+                  write(unit, '(DT)') detailed_output_t(output_data)
+                  close(unit)
+              end if
+            end block
+          end if
+        end associate
+      end associate
+    end associate
+
     end program miniFAVOR

@@ -1,0 +1,69 @@
+name: CI
+
+on: [push, pull_request]
+
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest
+
+    env:
+      FC: gfortran
+      GCC_V: 10
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v1
+
+    - name: Checkout git submodules
+      run: |
+        git submodule update --init
+
+    - name: Install Dependencies
+      run: |
+        sudo apt install -y gfortran-${GCC_V} wget python-dev python build-essential
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
+        if [ ! -d OpenCoarrays-2.9.2 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.9.2/OpenCoarrays-2.9.2.tar.gz && tar -xf OpenCoarrays-2.9.2.tar.gz && cd OpenCoarrays-2.9.2 && TERM=xterm ./install.sh -y; fi
+        wget -P . "https://bootstrap.pypa.io/get-pip.py" && sudo python get-pip.py && rm get-pip.py
+        sudo pip install ford
+
+    - name: Get Time
+      id: time
+      uses: nanzm/get-time-action@v1.0
+      with:
+        format: 'YYYY-MM'
+
+    - name: Setup cache for opencoarrays
+      id: cache
+      uses: actions/cache@v2
+      with:
+        path: "/home/runner/OpenCoarrays-2.9.2/"
+        key: ${{ steps.time.outputs.time }}
+
+    - name: Build
+      run: |
+        source OpenCoarrays-2.9.2/prerequisites/installations/opencoarrays/2.9.2/setup.sh
+        mkdir build
+        cd build
+        FC=caf cmake ..
+        make -j $(nproc)
+
+    - name: Run tests
+      run: |
+        source OpenCoarrays-2.9.2/prerequisites/installations/opencoarrays/2.9.2/setup.sh
+        cd build
+        ctest --output-on-failure
+
+    - name: miniFAVOR Documenation
+      run: |
+        cd doc
+        ford miniFAVOR-FORD-file.md
+
+    - name: Deploy documentation to gh-pages branch
+      if: ${{ github.ref == 'refs/heads/develop' }}
+      uses: JamesIves/github-pages-deploy-action@3.7.1
+      with:
+        BRANCH: gh-pages
+        FOLDER: doc/html
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        CLEAN: true

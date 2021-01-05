@@ -1,7 +1,16 @@
-module constants_h
+module reference_inputs_h
+    implicit none
+    real :: a, b
+    integer :: nsim, ntime
+    logical :: details
+    real, dimension(:), allocatable :: stress, temp
+    real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
+end module
+
+module reference_constants_h
     implicit none
     real, parameter :: Pi = 4.D0*DATAN(1.D0)
-    real, dimension(0:40,7), parameter :: CF_weld = reshape((/    &
+    real, dimension(0:40,7), parameter :: CF_weld = reshape( (/    &
          20,  20,  21,  22,  24,  26,  29,  32,  36,  40, &
          44,  49,  52,  58,  61,  66,  70,  75,  79,  83, &
          88,  92,  97, 101, 105, 110, 113, 119, 122, 128, &
@@ -36,5 +45,13 @@ module constants_h
         135, 148, 161, 176, 188, 200, 211, 221, 230, 238, &
         245, 252, 257, 263, 268, 272, 276, 280, 284, 287, &
         290, 293, 296, 299, 302, 305, 308, 311, 314, 317, &
-        320 /), [41, 7])
-end module constants_h
+        320 /), (/ 41, 7/))
+end module
+
+module reference_outputs_h
+    implicit none
+    real, dimension(:), allocatable :: K_hist
+    real, dimension(:,:), allocatable :: Chemistry
+    real, dimension(:,:), allocatable :: cpi_hist
+    real, dimension(:,:), allocatable :: CPI_results
+end module
