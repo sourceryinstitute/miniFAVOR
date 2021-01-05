@@ -35,7 +35,7 @@ Prerequisites
 1. [`gfortran`] 10.2 for compiling Fortran 2018.
 2. [`cmake`] 3.16 for generating Makefiles or IDE project files.
 3. [`ford`] 6 for building documentation.
-4. [opencoarrays] 2.9.2 for compiling and launching parallel executable programs.
+4. [OpenCoarrays] 2.9.2 for compiling and launching parallel executable programs.
 
 Cloning miniFAVOR
 -----------------
@@ -68,3 +68,4 @@ The [developer documentation] is published via GitHub Pages.
 [`ford`]: https://github.com/Fortran-FOSS-Programmers/ford
 [new issue]: https://github.com/everythingfunctional/miniFAVOR/issues/new
 [developer documentation]: https://sourceryinstitute.github.io/miniFAVOR/
+[OpenCoarrays]: https://github.com/sourceryinstitute/opencoarrays
