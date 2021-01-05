@@ -3,6 +3,7 @@ project: miniFAVOR
 summary: Proxy Application miniFAVOR
 src_dir: ../app
          ../src
+         ../tests
 exclude_dir: ../doc
 exclude_dir: ../src/git-submodules
 output_dir: ../doc/html
