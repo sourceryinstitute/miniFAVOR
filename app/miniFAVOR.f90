@@ -14,98 +14,74 @@
 
     program miniFAVOR
 
-    use I_O, only : read_In, write_Out
     use calc_RTndt, only : RTndt, CF
     use calc_K, only : Ki_t
     use calc_cpi, only : cpi_t
-    use randomness_m, only: random_samples_t
+    use random_samples_m, only: random_samples_t
     use material_content_m, only: material_content_t
+    use data_partition_interface, only : data_partition_t => data_partition
+    use input_data_m, only : input_data_t
+    use output_data_m, only : output_data_t
+    use detailed_output_m, only : detailed_output_t
+    use iso_fortran_env, only : input_unit
 
     implicit none
 
     ! Variables
     character(len=64) :: fn_IN
-    integer, parameter :: n_IN = 15
-    integer, parameter :: n_ECHO = n_IN + 1
-    integer, parameter :: n_OUT = n_IN + 2
-    integer, parameter :: n_DAT = n_IN + 3
-    integer :: i, j
+    integer, parameter :: input_unit_reader=1, output_writer=1
+    integer :: i
     type(random_samples_t), allocatable :: samples(:)
-    type(material_content_t), allocatable :: material_content(:)
+    type(data_partition_t) data_partition
+    type(input_data_t) input_data
 
-    ! Inputs
-    real :: a, b
-    integer :: nsim, ntime
-    logical :: details
-    real, dimension(:), allocatable :: stress, temp
-    real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
-
-    ! Outputs
-    real, allocatable :: K_hist(:)
-    real, allocatable :: Chemistry_factor(:)
-    real, allocatable :: R_Tndt(:)
-    real, allocatable :: CPI(:)
-    real, allocatable :: CPI_avg(:)
-    real, dimension(:,:), allocatable :: cpi_hist
 
     ! Body of miniFAVOR
 
-    !Get input file name
-    print *, 'Input file name:'
-    read (*,'(a)') fn_IN
+    associate(me=>this_image())
 
-    !Read input file
-    call read_IN(fn_IN, n_IN, n_ECHO, &
-        a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, stress, temp)
+      !Get input file name
+      if  (me==input_unit_reader) then
+        print *, 'Input file name:'
+        read (input_unit,'(a)') fn_IN
+        !Read input file
+        call input_data%define(fn_IN)
+      end if
 
-    !Allocate output arrays
-    allocate(material_content(nsim))
-    allocate(Chemistry_factor(nsim))
-    allocate(cpi_hist(nsim, ntime))
-    allocate(R_Tndt(nsim), CPI(nsim), CPI_avg(nsim), samples(nsim))
+      call input_data%broadcast(source_image = input_unit_reader)
 
-    !Calculate applied stress intensity factor (SIF)
-    K_hist = Ki_t(a, b, stress)
+      !Calculate applied stress intensity factor (SIF)
+      associate( &
+        nsim => input_data%nsim() &
+      )
 
-    ! This cannot be parallelized or reordered without the results changing
-    do i = 1, nsim
-      call samples(i)%define()
-    end do
+        call data_partition%define_partitions(cardinality=nsim)
 
-    !Start looping over number of simulations
-    Vessel_loop: do i = 1, nsim
+        allocate(samples(nsim))
+        do i = 1, nsim ! This cannot be parallelized or reordered without the results changing
+          call samples(i)%define()
+        end do
 
-        !Sample chemistry: assign Cu content and Ni content
-        material_content(i) = material_content_t(Cu_ave, Ni_ave, Cu_sig, Ni_sig, samples(i))
+        associate( &
+            output_data => output_data_t(input_data, samples), &
+            base_name => fn_IN(1:index(fn_IN, '.in')-1) &
+        )
+          if (me==output_writer) then
+            block
+              integer :: unit
 
-        !Calculate chemistry factor: Chemistry_factor(i) is chemistry factor
-        Chemistry_factor(i) = CF(material_content(i)%Cu(), material_content(i)%Ni())
-
-        !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-        R_Tndt(i) = RTndt(a, Chemistry_factor(i), fsurf, RTndt0, samples(i)%phi())
-
-        !Start time loop
-        Time_loop: do j = 1, ntime
-            !Calculate instantaneous cpi(t)
-            cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
-        end do Time_loop
-
-        !Calculate CPI for vessel 'i'
-        CPI(i) = maxval(cpi_hist(i,:))
-
-        !Calculate moving average CPI for trials executed so far
-        CPI_avg(i) = sum(CPI(1:i))/i
-
-    end do Vessel_loop
-
-    block
-      integer, parameter :: nmaterials=2
-
-      associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
-        call write_OUT(fn_IN, n_OUT, n_DAT, &
-          a, b, nsim, ntime, details, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0, &
-          R_Tndt, CPI, CPI_avg, K_hist, content, Chemistry_factor)
+              open(newunit=unit,  file=base_name//".out", status='unknown')
+              write(unit, '(DT)') output_data
+              close(unit)
+              if (input_data%details()) then
+                  open(newunit=unit,  file=base_name//".dat", status='unknown')
+                  write(unit, '(DT)') detailed_output_t(output_data)
+                  close(unit)
+              end if
+            end block
+          end if
+        end associate
       end associate
-    end block
+    end associate
 
     end program miniFAVOR

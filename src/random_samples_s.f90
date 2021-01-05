@@ -1,4 +1,4 @@
-submodule(randomness_m) randomness_s
+submodule(random_samples_m) random_samples_s
   use assertions_interface,only : assert
   implicit none
 

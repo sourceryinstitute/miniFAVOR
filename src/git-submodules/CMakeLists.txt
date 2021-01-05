@@ -57,4 +57,8 @@ add_library(sourcery
   sourcery/src/object_interface.f90
   sourcery/src/string_functions_implementation.f90
   sourcery/src/string_functions_interface.f90
+  sourcery/src/command_line_implementation.f90
+  sourcery/src/command_line_interface.f90
+  sourcery/src/oracle_implementation.f90
+  sourcery/src/oracle_interface.f90
 )

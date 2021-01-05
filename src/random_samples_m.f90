@@ -1,10 +1,10 @@
-module randomness_m
-  use object_interface, only : object
+module random_samples_m
+  use object_interface, only : object_t
   implicit none
   private
   public :: random_samples_t
 
-  type, extends(object) :: random_samples_t
+  type, extends(object_t) :: random_samples_t
     private
     real :: Cu_sig_local_
     real :: Cu_local_
@@ -54,7 +54,7 @@ module randomness_m
       real self_Ni_local
     end function
 
-    pure module function phi(self) result(self_phi)
+    elemental module function phi(self) result(self_phi)
       implicit none
       class(random_samples_t), intent(in) :: self
       real self_phi

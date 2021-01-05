@@ -6,7 +6,7 @@ module calc_RTndt
 
 contains
 
-  pure function RTndt(a, CF, fsurf, RTndt0, phi)
+  elemental function RTndt(a, CF, fsurf, RTndt0, phi)
 
     real :: RTndt
     real, intent(in) :: a, CF, fsurf, RTndt0, phi
@@ -23,7 +23,7 @@ contains
   end function RTndt
 
   !This function calculates the weld chemistry factor given the copper and nickel contents
-  pure function CF(Cu, Ni)
+  elemental function CF(Cu, Ni)
 
     use constants_h, only: CF_weld
 

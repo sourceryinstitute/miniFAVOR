@@ -1,5 +1,5 @@
 module random_samples_tests
-  use randomness_m, only : random_samples_t
+  use random_samples_m, only : random_samples_t
   use vegetables, only  : result_t, test_item_t, it, assert_that, describe
   implicit none
 contains
