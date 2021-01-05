@@ -20,47 +20,72 @@ contains
     use calc_K, only : Ki_t
     use calc_cpi, only : cpi_t
     use material_content_m, only: material_content_t
+    use data_partition_interface, only : data_partition_t
 
     real, dimension(:,:), allocatable :: cpi_hist
     integer :: i, j
+    type(data_partition_t) data_partition
+    real, allocatable :: CPI(:)
+    real, allocatable, dimension(:) :: R_Tndt, CPI, CPI_avg, Chemistry_factor, material_content
+    real, allocatable, dimension(:,:) :: content
+    integer, parameter :: nmaterials=2
 
     associate( &
       K_hist => Ki_t(input_data%a(), input_data%b(), input_data%stress()), &
       nsim => input_data%nsim(), &
-      ntime => input_data%ntime() &
+      ntime => input_data%ntime(), &
+      me => this_image() &
     )
 
-      !Sample chemistry: assign Cu content and Ni content
-      associate(material_content => material_content_t( &
-          input_data%Cu_ave(),  input_data%Ni_ave(), input_data%Cu_sig(), input_data%Ni_sig(), random_samples))
-        associate(Chemistry_factor => CF(material_content%Cu(), material_content%Ni()))
-          !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
-          associate(R_Tndt => RTndt( &
-              input_data%a(), Chemistry_factor, input_data%fsurf(), input_data%RTndt0(), random_samples%phi()) &
-          )
-            !Start looping over number of simulations
-            allocate(cpi_hist(nsim, ntime))
-            do concurrent(i = 1:nsim, j = 1:ntime)
-              ! Instantaneous cpi(t)
-              associate(temp => input_data%temp())
-                cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
-              end associate
-            end do
-            associate(CPI => [(maxval(cpi_hist(i,:)), i=1,nsim)])
-              ! Moving average CPI for all trials
-              associate(CPI_avg => [(sum(CPI(1:i))/i, i=1,nsim)])
-                block
-                  integer, parameter :: nmaterials=2
+      allocate(R_Tndt(nsim), CPI(nsim), CPI_avg(nsim), Chemistry_factor(nsim), material_content(nsim))
+      allocate(content(nsim, nmaterials))
 
-                  associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
-                    new_output_data = output_data_t( &
-                        input_data=input_data, R_Tndt=R_Tndt, CPI=CPI, CPI_avg=CPI_avg, K_hist=K_hist, &
-                        Chemistry_content=content, Chemistry_factor=Chemistry_factor &
-                      )
-                  end associate
-                end block
-              end associate
+      call data_partition%define_partitions(cardinality=nsim)
+
+      associate(my_first => data_partition%first(me), my_last => data_partition%last(me))
+
+        !Sample chemistry: assign Cu content and Ni content
+        material_content(my_first:my_last) = material_content_t( &
+          input_data%Cu_ave(),  input_data%Ni_ave(), input_data%Cu_sig(), input_data%Ni_sig(), random_samples(my_first:my_last) &
+        )
+
+        Chemistry_factor(my_first:my_last) = CF(material_content(my_first:my_last)%Cu(), material_content(my_first:my_last)%Ni())
+
+        !Calculate RTndt for this vessel trial: CPI_results(i,1) is RTndt
+        R_Tndt(my_first:my_last) = RTndt( &
+          input_data%a(), Chemistry_factor(my_first:my_last), input_data%fsurf(), input_data%RTndt0(), &
+          random_samples(my_first:my_last)%phi() &
+        )
+          !Start looping over number of simulations
+          allocate(cpi_hist(my_first:my_last, ntime))
+          do concurrent(i = my_first:my_last, j = 1:ntime)
+            ! Instantaneous cpi(t)
+            associate(temp => input_data%temp())
+              cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
             end associate
+          end do
+
+          allocate(CPI(nsim))
+          CPI(my_first:my_last) = [(maxval(cpi_hist(i,:)), i=my_first,my_last)]
+          call data_partition%gather(CPI,dim=1)
+
+          ! Moving average CPI for all trials
+          CPI_avg = [(sum(CPI(1:i))/i, i=1,nsim)]
+
+          call data_partition%gather(material_content, dim=1) !!!!! won't compile: we need a gather that supports derived types
+
+          associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
+
+            call data_partition%gather(R_tndt, dim=1)
+            call data_partition%gather(CPI, dim=1)
+            call data_partition%gather(CPI_avg, dim=1)
+            call data_partition%gather(content, dim=1)
+            call data_partition%gather(Chemistry_factor, dim=1)
+
+            new_output_data = output_data_t( &
+                input_data=input_data, R_Tndt=R_Tndt, CPI=CPI, CPI_avg=CPI_avg, K_hist=K_hist, &
+                Chemistry_content=content, Chemistry_factor=Chemistry_factor &
+              )
           end associate
         end associate
       end associate
