@@ -30,7 +30,7 @@ jobs:
 
     - name: Build
       run: |
-        source ./OpenCoarrays/prerequisites/installations/opencoarrays/2.9.2/setup.sh
+        source OpenCoarrays-2.9.2/prerequisites/installations/opencoarrays/2.9.2/setup.sh
         mkdir build
         cd build
         FC=caf cmake ..
