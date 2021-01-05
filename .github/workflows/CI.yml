@@ -38,6 +38,7 @@ jobs:
 
     - name: Run tests
       run: |
+        source OpenCoarrays-2.9.2/prerequisites/installations/opencoarrays/2.9.2/setup.sh
         cd build
         ctest --output-on-failure
 
