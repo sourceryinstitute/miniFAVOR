@@ -26,7 +26,7 @@ contains
     end associate
 
     output_data = output_data_t(input_data, samples) ! invoke generic interface for the whole_shebang function
-    reference_data = output_data
+    reference_data = reference_wrapper(input_data)
     result_ = assert_that(output_data%within_tolerance(reference_data, tolerance=1.E-06))
   end function
 
@@ -41,4 +41,31 @@ contains
     )
   end function
 
+  function reference_wrapper(input_data) result(output_data)
+    use reference_miniFAVOR_m, only: reference_miniFAVOR
+    use reference_inputs_h, only: a, b, nsim, ntime, details, stress, temp, Cu_ave, Ni_ave, Cu_sig, Ni_sig, fsurf, RTndt0
+    use reference_outputs_h, only: K_hist, Chemistry, CPI_results
+
+    type(input_data_t), intent(in) :: input_data
+    type(output_data_t) :: output_data
+
+    a = input_data%a()
+    b = input_data%b()
+    nsim = input_data%nsim()
+    ntime = input_data%ntime()
+    details = input_data%details()
+    stress = input_data%stress()
+    temp = input_data%temp()
+    Cu_ave = input_data%Cu_ave()
+    Ni_ave = input_data%Ni_ave()
+    Cu_sig = input_data%Cu_sig()
+    Ni_sig = input_data%Ni_sig()
+    fsurf = input_data%fsurf()
+    RTndt0 = input_data%RTndt0()
+
+    call reference_miniFAVOR
+
+    output_data = output_data_t( &
+        input_data, CPI_results(:,1), K_hist, Chemistry(:,1:2), Chemistry(:,3), CPI_results(:,2), CPI_results(:,3))
+  end function
 end module whole_shebang_tests

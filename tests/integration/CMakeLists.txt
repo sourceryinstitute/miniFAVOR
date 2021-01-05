@@ -15,5 +15,5 @@ add_executable(test_whole_shebang
 target_link_libraries(test_whole_shebang
   PRIVATE minifav
   PRIVATE vegetables
+  PRIVATE reference_miniFAVOR
 )
-
