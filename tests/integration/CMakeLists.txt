@@ -6,6 +6,8 @@ foreach(file test.in)
   )
 endforeach()
 
+add_subdirectory(reference-implementation)
+
 add_executable(test_whole_shebang
   main.f90
   whole_shebang_tests.f90
@@ -13,4 +15,5 @@ add_executable(test_whole_shebang
 target_link_libraries(test_whole_shebang
   PRIVATE minifav
   PRIVATE vegetables
+  PRIVATE reference_miniFAVOR
 )
