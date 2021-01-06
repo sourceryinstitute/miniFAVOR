@@ -19,10 +19,6 @@ contains
       self_Cu_sig_local = self%Cu_sig_local_
     end procedure
 
-    module procedure user_defined
-      self_defined = self%defined
-    end procedure
-
     module procedure define
       logical, save :: first_call=.true.
 
@@ -41,7 +37,7 @@ contains
       call random_number(self%Ni_local_)
       call random_number(self%phi_)
 
-      self%defined = .true.
+      call self%mark_as_defined
     end procedure
 
 end submodule

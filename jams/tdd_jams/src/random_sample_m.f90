@@ -1,21 +1,20 @@
 module random_sample_m
+  use object_m, only: object_t
   implicit none
 
   private
 
-  type, public :: random_sample_t
+  type, public, extends(object_t) :: random_sample_t
     private
     real phi_
     real Ni_local_
     real Cu_local_
     real Cu_sig_local_
-    logical :: defined = .false.
   contains
     procedure :: phi
     procedure :: Ni_local
     procedure :: Cu_local
     procedure :: Cu_sig_local
-    procedure :: user_defined
     procedure :: define
   end type
 
@@ -43,12 +42,6 @@ module random_sample_m
       implicit none
       class(random_sample_t), intent(in) :: self
       real self_Cu_sig_local
-    end function
-
-    pure module function user_defined(self) result(self_defined)
-      implicit none
-      class(random_sample_t), intent(in) :: self
-      logical self_defined
     end function
 
     module subroutine define(self)
