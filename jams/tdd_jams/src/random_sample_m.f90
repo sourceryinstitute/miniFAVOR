@@ -11,29 +11,34 @@ module random_sample_m
     procedure :: define
   end type
 
- ! interface
-
- !   pure module function user_defined(self) result(is_defined)
- !     implicit none
- !     class(random_sample_t), intent(in) :: self
- !     logical is_defined
- !   end function
-
- ! end interface
-
-contains
+  interface
 
     pure module function user_defined(self) result(self_defined)
       implicit none
       class(random_sample_t), intent(in) :: self
       logical self_defined
-      self_defined = self%defined
     end function
 
     module subroutine define(self)
       implicit none
       class(random_sample_t), intent(out) :: self
-      self%defined = .true.
     end subroutine
 
-end module random_sample_m
+  end interface
+
+end module
+
+submodule(random_sample_m) random_sample_s
+  implicit none
+
+contains
+
+    module procedure user_defined
+      self_defined = self%defined
+    end procedure
+
+    module procedure define
+      self%defined = .true.
+    end procedure
+
+end submodule
