@@ -5,13 +5,45 @@ module random_sample_m
 
   type, public :: random_sample_t
     private
+    real phi_
+    real Ni_local_
+    real Cu_local_
+    real Cu_sig_local_
     logical :: defined = .false.
   contains
+    procedure :: phi
+    procedure :: Ni_local
+    procedure :: Cu_local
+    procedure :: Cu_sig_local
     procedure :: user_defined
     procedure :: define
   end type
 
   interface
+
+    pure module function phi(self) result(self_phi)
+      implicit none
+      class(random_sample_t), intent(in) :: self
+      real self_phi
+    end function
+
+    pure module function Ni_local(self) result(self_Ni_local)
+      implicit none
+      class(random_sample_t), intent(in) :: self
+      real self_Ni_local
+    end function
+
+    pure module function Cu_local(self) result(self_Cu_local)
+      implicit none
+      class(random_sample_t), intent(in) :: self
+      real self_Cu_local
+    end function
+
+    pure module function Cu_sig_local(self) result(self_Cu_sig_local)
+      implicit none
+      class(random_sample_t), intent(in) :: self
+      real self_Cu_sig_local
+    end function
 
     pure module function user_defined(self) result(self_defined)
       implicit none
@@ -27,18 +59,3 @@ module random_sample_m
   end interface
 
 end module
-
-submodule(random_sample_m) random_sample_s
-  implicit none
-
-contains
-
-    module procedure user_defined
-      self_defined = self%defined
-    end procedure
-
-    module procedure define
-      self%defined = .true.
-    end procedure
-
-end submodule
