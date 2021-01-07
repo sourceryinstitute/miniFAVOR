@@ -4,9 +4,9 @@ submodule(oracle_m) oracle_s
 contains
 
     module procedure within_tolerance
-      associate(difference => self - reference)
-        within_tolerance = difference%norm() < tol
-      end associate
+      class(oracle_t), allocatable :: difference
+      difference = self - reference
+      within_tolerance = difference%norm() < tol
     end procedure
 
 end submodule

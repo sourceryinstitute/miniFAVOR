@@ -5,8 +5,12 @@ submodule(material_content_m) material_content_s
 contains
 
   module procedure subtract
-    difference%Cu_ = self%Cu_ - rhs%Cu_
-    difference%Ni_ = self%Ni_ - rhs%Ni_
+    select type(rhs)
+      type is(material_content_t)
+        difference = material_content_t(self%Cu_ - rhs%Cu_, self%Ni_ - rhs%Ni_)
+      class default
+        error stop "material_content_t%subtract: unsupported type"
+    end select
   end procedure
 
   module procedure norm
