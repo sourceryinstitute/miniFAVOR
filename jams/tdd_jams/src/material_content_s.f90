@@ -1,15 +1,24 @@
 submodule(material_content_m) material_content_s
+  use assertions_m, only : assert
   implicit none
 
 contains
 
   module procedure sample_chem
+    ! Requirements
+    call assert(samples%user_defined(), "sample_chem: samples%user_defined()")
+    call assert(all([Cu_ave, Ni_ave, Cu_sig, Ni_sig]>0.), "sample_chem: all([Cu_ave, Ni_ave, Cu_sig, Ni_sig]>0.)")
+
     new_material_content_t%Cu_ave = Cu_ave
     new_material_content_t%Ni_ave = Ni_ave
     new_material_content_t%Cu_sig = Cu_sig
     new_material_content_t%Ni_sig = Ni_sig
     new_material_content_t%samples = samples
     call new_material_content_t%mark_as_defined
+
+    ! Assurances
+    call assert(new_material_content_t%user_defined(), "sample_chem: new_material_content_t%user_defined()")
+
   end procedure
 
   module procedure Cu
