@@ -7,6 +7,9 @@ module material_content_m
   public :: material_content_t
 
   type, extends(object_t) :: material_content_t
+    private
+    real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig
+    type(random_sample_t) :: samples
   contains
     procedure :: Ni
     procedure :: Cu
