@@ -1,16 +1,18 @@
 module material_content_m
-  use object_m, only : object_t
+  use oracle_m, only : oracle_t
   use random_sample_m, only: random_sample_t
   implicit none
 
   private
   public :: material_content_t
 
-  type, extends(object_t) :: material_content_t
+  type, extends(oracle_t) :: material_content_t
     private
-    real :: Cu_ave, Ni_ave, Cu_sig, Ni_sig
+    real :: Cu_, Ni_
     type(random_sample_t) :: samples
   contains
+    procedure :: subtract
+    procedure :: norm
     procedure :: Ni
     procedure :: Cu
   end type
@@ -27,6 +29,19 @@ module material_content_m
   end interface
 
   interface
+
+    module function norm(self) result(norm_of_self)
+      implicit none
+      class(material_content_t), intent(in) :: self
+      real norm_of_self
+    end function
+
+    module function subtract(self, rhs) result(difference)
+      implicit none
+      class(material_content_t), intent(in) :: self
+      class(oracle_t), intent(in) :: rhs
+      class(oracle_t), allocatable :: difference
+    end function
 
     pure module function Ni(self) result(my_Ni)
       !! Result is the nickel content
