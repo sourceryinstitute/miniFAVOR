@@ -19,7 +19,7 @@ module object_m
       logical self_defined
     end function
 
-    module subroutine mark_as_defined(self)
+    pure module subroutine mark_as_defined(self)
       implicit none
       class(object_t), intent(inout) :: self
     end subroutine
