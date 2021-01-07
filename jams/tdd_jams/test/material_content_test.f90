@@ -15,6 +15,7 @@ contains
         "material_content_t", &
         [ it("is not marked as user_defined initially", check_not_user_defined) &
         , it("is marked as user_defined after being constructed", check_user_defined) &
+        , it("contents are not negative", check_contents_not_negative) &
         ])
   end function
 
@@ -40,5 +41,21 @@ contains
         Cu_ave = 0.1, Ni_ave = 0.2, Cu_sig = 0.01, Ni_sig = 0.01, samples=samples)
 
     result_ = assert_that(content%user_defined())
+  end function
+
+  function check_contents_not_negative() result(result_)
+    type(result_t) :: result_
+
+    type(material_content_t) :: content
+    type(random_sample_t) :: samples
+
+    call samples%define()
+
+    content = material_content_t( &
+        Cu_ave = 0.1, Ni_ave = 0.2, Cu_sig = 0.01, Ni_sig = 0.01, samples=samples)
+
+    result_ = &
+        assert_that(content%Cu() > 0.0, "Cu") &
+        .and.assert_that(content%Ni() > 0.0, "Ni")
   end function
 end module
