@@ -37,7 +37,7 @@ contains
     call samples%define()
 
     content = material_content_t( &
-        Cu_ave = 0.1, Ni_ave = 0.2, Cu_sig = 0.01, Ni_sig = 0.01, samples)
+        Cu_ave = 0.1, Ni_ave = 0.2, Cu_sig = 0.01, Ni_sig = 0.01, samples=samples)
 
     result_ = assert_that(content%user_defined())
   end function
