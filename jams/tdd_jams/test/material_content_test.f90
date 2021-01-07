@@ -16,6 +16,7 @@ contains
         [ it("is not marked as user_defined initially", check_not_user_defined) &
         , it("is marked as user_defined after being constructed", check_user_defined) &
         , it("contents are not negative", check_contents_not_negative) &
+        , it("two material contents are within 6 sigma of eachother", check_difference) &
         ])
   end function
 
@@ -57,5 +58,25 @@ contains
     result_ = &
         assert_that(content%Cu() > 0.0, "Cu") &
         .and.assert_that(content%Ni() > 0.0, "Ni")
+  end function
+
+  function check_difference() result(result_)
+    type(result_t) :: result_
+
+    real, parameter :: CU_SIG = 0.01, NI_SIG = 0.01, CU_AVE = 0.1, NI_AVE = 0.2
+    type(material_content_t) :: content1
+    type(random_sample_t) :: samples1
+    type(material_content_t) :: content2
+    type(random_sample_t) :: samples2
+
+    call samples1%define()
+    call samples2%define()
+
+    content1 = material_content_t( &
+        Cu_ave = CU_AVE, Ni_ave = NI_AVE, Cu_sig = CU_SIG, Ni_sig = NI_SIG, samples=samples1)
+    content2 = material_content_t( &
+        Cu_ave = CU_AVE, Ni_ave = NI_AVE, Cu_sig = CU_SIG, Ni_sig = NI_SIG, samples=samples2)
+
+    result_ = assert_that(content1%within_tolerance(content2, 6.*max(CU_SIG, NI_SIG)))
   end function
 end module
