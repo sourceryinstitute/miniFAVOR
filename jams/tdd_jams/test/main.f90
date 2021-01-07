@@ -5,14 +5,17 @@ program main
     call run()
 contains
     subroutine run()
+        use material_content_test, only: &
+                material_content_material_content => test_material_content
         use random_sample_test, only: &
                 random_sample_random_sample => test_random_sample
         use vegetables, only: test_item_t, test_that, run_tests
 
         type(test_item_t) :: tests
-        type(test_item_t) :: individual_tests(1)
+        type(test_item_t) :: individual_tests(2)
 
-        individual_tests(1) = random_sample_random_sample()
+        individual_tests(1) = material_content_material_content()
+        individual_tests(2) = random_sample_random_sample()
         tests = test_that(individual_tests)
 
         call run_tests(tests)
