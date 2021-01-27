@@ -41,11 +41,13 @@ module material_content_m
     end subroutine
 
     elemental module function Cu(self) result(my_Cu)
+      implicit none
       class(material_content_t), intent(in) :: self
       real my_Cu
     end function
 
     elemental module function Ni(self) result(my_Ni)
+      implicit none
       class(material_content_t), intent(in) :: self
       real my_Ni
     end function
