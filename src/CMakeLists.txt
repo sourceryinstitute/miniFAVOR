@@ -8,7 +8,7 @@ add_library(minifav
   material_content_m.f90
   material_content_s.f90
   input_data_m.f90
-  input_data_s.f90
+  input_data_s.F90
   output_data_m.f90
   output_data_s.f90
   detailed_output_m.f90
