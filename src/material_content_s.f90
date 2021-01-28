@@ -53,4 +53,25 @@ contains
 
   end procedure
 
+  module procedure gather
+
+    real, allocatable, dimension(:) :: Cu_local, Ni_local
+
+    allocate(Cu_local(size(material_content)), Ni_local(size(material_content)))
+
+    associate(me => this_image())
+      associate(my_first => data_partition%first(me), my_last => data_partition%last(me))
+        Cu_local(my_first:my_last) = material_content(my_first:my_last)%Cu()
+        Ni_local(my_first:my_last) = material_content(my_first:my_last)%Ni()
+      end associate
+    end associate
+
+    call data_partition%gather(Cu_local, dim=1)
+    call data_partition%gather(Ni_local, dim=1)
+
+    material_content%Cu_ = Cu_local
+    material_content%Ni_ = Ni_local
+
+  end procedure
+
 end submodule
