@@ -6,10 +6,10 @@
 	url = https://gitlab.com/everythingfunctional/iso_varying_string.git
 [submodule "src/git-submodules/vegetables"]
 	path = src/git-submodules/vegetables
-	url = https://gitlab.com/everythingfunctional/vegetables
+	url = https://gitlab.com/everythingfunctional/vegetables.git
 [submodule "src/git-submodules/parff"]
 	path = src/git-submodules/parff
-	url = https://gitlab.com/everythingfunctional/parff
+	url = https://gitlab.com/everythingfunctional/parff.git
 [submodule "src/git-submodules/sourcery"]
 	path = src/git-submodules/sourcery
-	url = https://github.com/sourceryinstitute/sourcery
+	url = https://github.com/sourceryinstitute/sourcery.git
