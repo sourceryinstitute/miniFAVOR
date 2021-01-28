@@ -60,7 +60,7 @@ jobs:
         ford miniFAVOR-FORD-file.md
 
     - name: Deploy documentation to gh-pages branch
-      if: ${{ github.ref == 'refs/heads/develop' }}
+      if: ${{ github.ref == 'refs/heads/main' }}
       uses: JamesIves/github-pages-deploy-action@3.7.1
       with:
         BRANCH: gh-pages
