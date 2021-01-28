@@ -19,14 +19,6 @@ jobs:
       run: |
         git submodule update --init
 
-    - name: Install Dependencies
-      run: |
-        sudo apt install -y gfortran-${GCC_V} wget python-dev python build-essential
-        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
-        if [ ! -d OpenCoarrays-2.9.2 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.9.2/OpenCoarrays-2.9.2.tar.gz && tar -xf OpenCoarrays-2.9.2.tar.gz && cd OpenCoarrays-2.9.2 && TERM=xterm ./install.sh -y; fi
-        wget -P . "https://bootstrap.pypa.io/get-pip.py" && sudo python get-pip.py && rm get-pip.py
-        sudo pip install ford
-
     - name: Get Time
       id: time
       uses: nanzm/get-time-action@v1.0
@@ -39,6 +31,14 @@ jobs:
       with:
         path: "/home/runner/OpenCoarrays-2.9.2/"
         key: ${{ steps.time.outputs.time }}
+
+    - name: Install Dependencies
+      run: |
+        sudo apt install -y gfortran-${GCC_V} wget python-dev python build-essential graphviz
+        sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
+        if [ ! -d OpenCoarrays-2.9.2 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.9.2/OpenCoarrays-2.9.2.tar.gz && tar -xf OpenCoarrays-2.9.2.tar.gz && cd OpenCoarrays-2.9.2 && TERM=xterm ./install.sh -y; fi
+        wget -P . "https://bootstrap.pypa.io/get-pip.py" && sudo python get-pip.py && rm get-pip.py
+        sudo pip install ford
 
     - name: Build
       run: |

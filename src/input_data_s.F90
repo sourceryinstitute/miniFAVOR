@@ -107,7 +107,6 @@ contains
     module procedure broadcast
 
       integer size_stress, size_temp
-      type(input_data_t) message ! work around gfortran lack of support for polymorphic co_broadcast argument
 
       associate(me => this_image())
 
@@ -119,20 +118,57 @@ contains
         call co_broadcast(size_stress, source_image)
         call co_broadcast(size_temp, source_image)
 
-        if (me == source_image) then
-          message = self
-        else
-          allocate(message%stress_(size_stress))
-          allocate(message%temp_(size_temp))
+        if (me /= source_image) then
+          allocate(self%stress_(size_stress))
+          allocate(self%temp_(size_temp))
         end if
+       end associate
 
-        call co_broadcast(message, source_image)
+       workarounds: &
+       block
 
-        if (me /= source_image) self = message
+         logical, parameter :: opencoarrays_issue_727_fixed = .false.
 
-      end associate
+         if (.not. opencoarrays_issue_727_fixed) then
+          ! work around OpenCoarrays issue 727 (https://github.com/sourceryinstitute/OpenCoarrays/issues/727)
+          call broadcast_components
+         else
+           select type(self)
+             ! work around gfortran lack of support for polymorphic co_broadcast argument
+             type is(input_data_t)
+               call co_broadcast(self, source_image)
+             class default
+               error stop "input_data_type_t%broadcast: unsupported type"
+           end select
+         end if
 
+       end block workarounds
+
+#ifdef FORD
     end procedure
+#else
+    contains
+#endif
+
+      subroutine broadcast_components()
+        call co_broadcast(self%a_, source_image)
+        call co_broadcast(self%b_, source_image)
+        call co_broadcast(self%Cu_ave_, source_image)
+        call co_broadcast(self%Ni_ave_, source_image)
+        call co_broadcast(self%Cu_sig_, source_image)
+        call co_broadcast(self%Ni_sig_, source_image)
+        call co_broadcast(self%fsurf_, source_image)
+        call co_broadcast(self%RTndt0_, source_image)
+        call co_broadcast(self%stress_, source_image)
+        call co_broadcast(self%temp_, source_image)
+        call co_broadcast(self%nsim_, source_image)
+        call co_broadcast(self%ntime_, source_image)
+        call co_broadcast(self%details_, source_image)
+      end subroutine
+
+#ifndef FORD
+    end procedure
+#endif
 
     module procedure a
        self_a = self%a_

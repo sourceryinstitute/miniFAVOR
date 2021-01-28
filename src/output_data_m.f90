@@ -32,16 +32,19 @@ module output_data_m
   interface output_data_t
 
     pure module function default_constructor() result(new_output_data_t)
+      implicit none
       type(output_data_t) new_output_data_t
     end function
 
     module function whole_shebang(input_data, random_samples) result(new_output_data)
+      implicit none
       type(input_data_t), intent(in) :: input_data
       type(random_samples_t), intent(in) :: random_samples(:)
       type(output_data_t) :: new_output_data
     end function
 
     pure module function new_output_data(input_data, R_Tndt, K_hist, Chemistry_content, Chemistry_factor, CPI, CPI_avg)
+      implicit none
       type(input_data_t), intent(in) :: input_data
       real, intent(in) :: R_Tndt(:)
       real, intent(in) :: K_hist(:), Chemistry_content(:,:), Chemistry_factor(:)

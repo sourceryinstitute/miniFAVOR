@@ -1,8 +1,10 @@
 module material_content_m
+  use data_partition_interface, only : data_partition_t
   implicit none
 
   private
   public :: material_content_t
+  public :: gather
 
   type material_content_t
     !! Elemental content
@@ -41,14 +43,23 @@ module material_content_m
     end subroutine
 
     elemental module function Cu(self) result(my_Cu)
+      implicit none
       class(material_content_t), intent(in) :: self
       real my_Cu
     end function
 
     elemental module function Ni(self) result(my_Ni)
+      implicit none
       class(material_content_t), intent(in) :: self
       real my_Ni
     end function
+
+    module subroutine gather(material_content, data_partition, dim)
+      implicit none
+      type(material_content_t), intent(inout) :: material_content(:)
+      type(data_partition_t), intent(in) :: data_partition
+      integer, optional :: dim
+    end subroutine
 
   end interface
 
