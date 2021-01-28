@@ -14,11 +14,11 @@
 
     program miniFAVOR
 
+    use assertions_interface, only : assert
     use calc_RTndt, only : RTndt, CF
     use calc_K, only : Ki_t
     use calc_cpi, only : cpi_t
     use random_samples_m, only: random_samples_t
-    use material_content_m, only: material_content_t
     use input_data_m, only : input_data_t
     use output_data_m, only : output_data_t
     use detailed_output_m, only : detailed_output_t
@@ -49,6 +49,8 @@
 
       !Calculate applied stress intensity factor (SIF)
       associate(nsim => input_data%nsim())
+
+        call assert(nsim>0, "main: nsim>0", nsim)
 
         allocate(samples(nsim))
         do i = 1, nsim ! This cannot be parallelized or reordered without the results changing
