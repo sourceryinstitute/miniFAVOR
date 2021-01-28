@@ -144,7 +144,11 @@ contains
 
        end block workarounds
 
+#ifdef FORD
+    end procedure
+#else
     contains
+#endif
 
       subroutine broadcast_components()
         call co_broadcast(self%a_, source_image)
@@ -162,7 +166,9 @@ contains
         call co_broadcast(self%details_, source_image)
       end subroutine
 
+#ifndef FORD
     end procedure
+#endif
 
     module procedure a
        self_a = self%a_
