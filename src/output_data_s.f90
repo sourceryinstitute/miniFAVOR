@@ -19,14 +19,14 @@ contains
     use calc_RTndt, only : RTndt, CF
     use calc_K, only : Ki_t
     use calc_cpi, only : cpi_t
-    use material_content_m, only: material_content_t
+    use material_content_m, only: material_content_t, gather
     use data_partition_interface, only : data_partition_t
 
-    real, dimension(:,:), allocatable :: cpi_hist
     integer :: i, j
     type(data_partition_t) data_partition
+    type(material_content_t), allocatable :: material_content(:)
     real, allocatable :: CPI(:)
-    real, allocatable, dimension(:) :: R_Tndt, CPI, CPI_avg, Chemistry_factor, material_content
+    real, allocatable, dimension(:) :: R_Tndt, CPI_avg, Chemistry_factor
     real, allocatable, dimension(:,:) :: content
     integer, parameter :: nmaterials=2
 
@@ -36,9 +36,9 @@ contains
       ntime => input_data%ntime(), &
       me => this_image() &
     )
+      call assert(nsim>0, "whole_shebang: nsim>0", nsim)
 
-      allocate(R_Tndt(nsim), CPI(nsim), CPI_avg(nsim), Chemistry_factor(nsim), material_content(nsim))
-      allocate(content(nsim, nmaterials))
+      allocate(R_Tndt(nsim), CPI_avg(nsim), Chemistry_factor(nsim), material_content(nsim))
 
       call data_partition%define_partitions(cardinality=nsim)
 
@@ -56,38 +56,42 @@ contains
           input_data%a(), Chemistry_factor(my_first:my_last), input_data%fsurf(), input_data%RTndt0(), &
           random_samples(my_first:my_last)%phi() &
         )
+        block
+          real, dimension(:,:), allocatable :: cpi_hist
+
           !Start looping over number of simulations
           allocate(cpi_hist(my_first:my_last, ntime))
-          do concurrent(i = my_first:my_last, j = 1:ntime)
-            ! Instantaneous cpi(t)
-            associate(temp => input_data%temp())
-              cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
-            end associate
+          do j = 1,ntime
+            do concurrent(i = my_first:my_last)
+              ! Instantaneous cpi(t)
+              associate(temp => input_data%temp())
+                cpi_hist(i,j) = cpi_t(K_hist(j), R_Tndt(i), temp(j))
+              end associate
+            end do
           end do
 
           allocate(CPI(nsim))
           CPI(my_first:my_last) = [(maxval(cpi_hist(i,:)), i=my_first,my_last)]
-          call data_partition%gather(CPI,dim=1)
+        end block
+        call data_partition%gather(CPI,dim=1)
 
-          ! Moving average CPI for all trials
-          CPI_avg = [(sum(CPI(1:i))/i, i=1,nsim)]
+        ! Moving average CPI for all trials
+        CPI_avg = [(sum(CPI(1:i))/i, i=1,nsim)]
 
-          call data_partition%gather(material_content, dim=1) !!!!! won't compile: we need a gather that supports derived types
+        call gather(material_content, data_partition, dim=1)
 
-          associate(content => reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] ))
+        content = reshape([material_content%Cu(),material_content%Ni()], [nsim, nmaterials] )
 
-            call data_partition%gather(R_tndt, dim=1)
-            call data_partition%gather(CPI, dim=1)
-            call data_partition%gather(CPI_avg, dim=1)
-            call data_partition%gather(content, dim=1)
-            call data_partition%gather(Chemistry_factor, dim=1)
+        call data_partition%gather(content, dim=1)
+        call data_partition%gather(R_tndt, dim=1)
+        call data_partition%gather(CPI, dim=1)
+        call data_partition%gather(CPI_avg, dim=1)
+        call data_partition%gather(Chemistry_factor, dim=1)
 
-            new_output_data = output_data_t( &
-                input_data=input_data, R_Tndt=R_Tndt, CPI=CPI, CPI_avg=CPI_avg, K_hist=K_hist, &
-                Chemistry_content=content, Chemistry_factor=Chemistry_factor &
-              )
-          end associate
-        end associate
+        new_output_data = output_data_t( &
+            input_data=input_data, R_Tndt=R_Tndt, CPI=CPI, CPI_avg=CPI_avg, K_hist=K_hist, &
+            Chemistry_content=content, Chemistry_factor=Chemistry_factor &
+          )
       end associate
     end associate
   end procedure
