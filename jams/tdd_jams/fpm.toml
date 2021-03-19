@@ -1,0 +1,9 @@
+name = "tdd_jams"
+version = "0.1.0"
+license = "license"
+author = "Sourcery Inc."
+maintainer = "brad@sourceryinstitute.org"
+copyright = "2020 Sourcery, Inc."
+
+[dev-dependencies]
+vegetables = { git = "https://gitlab.com/everythingfunctional/vegetables", tag = "v7.0.1" }

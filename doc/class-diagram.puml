@@ -1,0 +1,23 @@
+@startuml
+Title miniFAVOR Class Diagram
+
+hide empty methods
+hide empty attributes
+
+
+input_data_t -down-* output_data_t
+
+class output_data_t{
+  input_data_ : input_data_t
+  R_Tndt_ : real[:]
+  Chemistry_content_ : real[:,:]
+  R_Tndt() : real[:]
+}
+
+detailed_output_t -up-|> output_data_t
+output_data_t -up-|> oracle_t
+random_samples_t -up-|> object_t
+material_content_t -> random_samples_t : receives >
+oracle_t -up-|> object_t
+
+@enduml
