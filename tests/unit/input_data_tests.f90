@@ -1,3 +1,8 @@
+!
+!     (c) 2020-2021 Sourcery, Inc.
+!     This software was developed for the U.S. Nuclear Regulatory Commission (US NRC) under contract # 31310020D0006:
+!     "Technical Assistance in Support of NRC Nuclear Regulatory Research for Materials, Waste, and Reactor Programs"
+!
 module input_data_tests
   use input_data_m, only : input_data_t
   use vegetables, only  : result_t, test_item_t, it, describe, assert_equals, assert_that
