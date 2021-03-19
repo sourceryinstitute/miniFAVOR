@@ -1,3 +1,8 @@
+!
+!     (c) 2020-2021 Sourcery, Inc.
+!     This software was developed for the U.S. Nuclear Regulatory Commission (US NRC) under contract # 31310020D0006:
+!     "Technical Assistance in Support of NRC Nuclear Regulatory Research for Materials, Waste, and Reactor Programs"
+!
 module detailed_output_m
   use output_data_m, only : output_data_t
   implicit none
