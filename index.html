@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+   
+   <meta name="description" content="Proxy Application miniFAVOR">
+    
+    <meta name="author" content="" >
+    <link rel="icon" href="./favicon.png">
+
+    <title> miniFAVOR </title>
+
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/pygments.css" rel="stylesheet">
+    <link href="./css/font-awesome.min.css" rel="stylesheet">
+    <link href="./css/local.css" rel="stylesheet">
+    
+    <link  href="./tipuesearch/tipuesearch.css" rel="stylesheet">
+    
+    
+    <link href="./css/user.css" rel="stylesheet">
+    
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    
+    <script src="./js/jquery-2.1.3.min.js"></script>
+    <script src="./js/svg-pan-zoom.min.js"></script>
+
+  </head>
+
+  <body>
+
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="./index.html">miniFAVOR </a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+        
+            <li class="dropdown hidden-xs visible-sm visible-md hidden-lg">
+              <a href="#" class="dropdown-toggle"
+              data-toggle="dropdown" role="button"
+              aria-haspopup="true"
+     aria-expanded="false">Contents <span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          
+              
+            <li><a href="./lists/files.html">Source Files</a></li>
+        
+        
+        
+            <li><a href="./lists/modules.html">Modules</a></li>
+        
+            
+                                
+            <li><a href="./lists/procedures.html">Procedures</a></li>
+        
+               
+            <li><a href="./lists/types.html">Derived Types</a></li>
+        
+        
+            <li><a href="./lists/programs.html">Programs</a></li>
+        
+            </ul>
+            </li>
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="./lists/files.html">Source Files</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="./lists/modules.html">Modules</a></li>
+
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="./lists/procedures.html">Procedures</a></li>
+
+                             
+<li class="visible-xs hidden-sm visible-lg"><a href="./lists/types.html">Derived Types</a></li>
+
+
+<li class="visible-xs hidden-sm visible-lg"><a href="./lists/programs.html">Programs</a></li>
+
+          </ul>
+        
+        <form action="./search.html" class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input type="text" class="form-control" placeholder="Search" name="q" id="tipue_search_input" autocomplete="off" required>
+        </div>
+<!--
+        <button type="submit" class="btn btn-default">Submit</button>
+-->
+        </form>
+        
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <div class="container">
+    
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <p>Proxy Application miniFAVOR</p>
+        	 
+	<p> Find us on&hellip;</p>
+        <p>
+        	 
+          <a class="btn btn-lg btn-primary" href="https://github.com/sourceryinstitute/miniFAVOR" role="button">GitHub</a>
+			 
+			 
+			 
+			 
+	         
+			 
+          <a class="btn btn-lg btn-danger" style="float:right" href="https://github.com/sourceryinstitute/miniFAVOR" role="button">Download the Source</a>
+			 
+        </p>
+      </div>
+
+      <div class="row" id='text'>
+		  
+        <div class="col-md-12">
+		  
+          <h1>miniFAVOR</h1>
+          <hr>
+<div class="toc">
+<ul>
+<li><a href="#minifavor-documentation">miniFAVOR Documentation</a><ul>
+<li><a href="#organization">Organization</a><ul>
+<li><a href="#top-navigation-bar">Top Navigation Bar</a></li>
+</ul>
+</li>
+<li><a href="#getting-help">Getting Help</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<h1 id="minifavor-documentation">miniFAVOR Documentation</h1>
+<p>Welcome to the miniFAVOR documentation.
+This online documentation is automatically generated from inline comments and static analysis using the <a href="https://github.com/Fortran-FOSS-Programmers/ford#readme">FORD</a> tool.</p>
+<h2 id="organization">Organization</h2>
+<p>The <a href="https://github.com/Fortran-FOSS-Programmers/ford#readme">FORD</a> tool is used to document Modern Fortran source code.</p>
+<h3 id="top-navigation-bar">Top Navigation Bar</h3>
+<p>You can navigate through the source code by using the black navigation bar at the top of this landing page. In addition, the search box on the right side of the top navbar, the following link is available:</p>
+<ul>
+<li><a href="./lists/files.html">Source Files</a>:
+  This landing page enumerates the source files associated with the project,
+  includes a graph depicting their interdependencies and links to their dedicated pages.</li>
+</ul>
+<h2 id="getting-help">Getting Help</h2>
+<p>If you encounter a problem, have a suggestion, or want to ask a question,
+we encourage you to post an issue in <a href="https://github.com/sourceryinstitute/miniFAVOR">this projects Github repository</a> by
+<a href="https://github.com/sourceryinstitute/miniFAVOR/issues/new">opening a new issue</a>.</p>
+        </div>
+		  
+      </div>
+      
+      
+      
+      
+		
+      <div class="row">
+        <div class="col-xs-6 col-sm-3">
+              <h3>Source Files</h3>
+              <ul>
+                
+                  
+                    <li><a href='./sourcefile/calc_cpi.f90.html'>Calc_cpi.f90</a></li>
+                  
+                
+                  
+                    <li><a href='./sourcefile/calc_cpi.f90~2.html'>Calc_cpi.f90</a></li>
+                  
+                
+                  
+                    <li><a href='./sourcefile/calc_k.f90.html'>Calc_K.f90</a></li>
+                  
+                
+                  
+                    <li><a href='./sourcefile/calc_k.f90~2.html'>Calc_K.f90</a></li>
+                  
+                
+                  
+                    <li><a href='./sourcefile/calc_rtndt.f90.html'>Calc_RTndt.f90</a></li>
+                  
+                
+                  
+                    <li><a href='./sourcefile/calc_rtndt.f90~2.html'>Calc_RTndt.f90</a></li>
+                  
+                
+                  
+                    <li><a href='./sourcefile/commons.f90.html'>Commons.f90</a></li>
+                  
+                
+                  
+                    <li><a href='./sourcefile/commons.f90~2.html'>Commons.f90</a></li>
+                  
+                
+                  
+                    <li><a href='./sourcefile/detailed_output_m.f90.html'>detailed_output_m.f90</a></li>
+                  
+                
+                  
+                    <li><a href='./sourcefile/detailed_output_s.f90.html'>detailed_output_s.f90</a></li>
+                  
+                
+                  
+                    <li><a href="./lists/files.html"><em>All source files&hellip;</em></a></li>
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+              </ul>
+          </div>
+          
+		  <div class="col-xs-6 col-sm-3">
+              <h3>Modules</h3>
+              <ul>
+                
+                  
+                    <li><a href='./module/calc_cpi.html'>calc_cpi</a></li>
+                  
+                
+                  
+                    <li><a href='./module/calc_k.html'>calc_k</a></li>
+                  
+                
+                  
+                    <li><a href='./module/calc_rtndt.html'>calc_rtndt</a></li>
+                  
+                
+                  
+                    <li><a href='./module/constants_h.html'>constants_h</a></li>
+                  
+                
+                  
+                    <li><a href='./module/detailed_output_m.html'>detailed_output_m</a></li>
+                  
+                
+                  
+                    <li><a href='./module/input_data_m.html'>input_data_m</a></li>
+                  
+                
+                  
+                    <li><a href='./module/input_data_tests.html'>input_data_tests</a></li>
+                  
+                
+                  
+                    <li><a href='./module/material_content_m.html'>material_content_m</a></li>
+                  
+                
+                  
+                    <li><a href='./module/output_data_m.html'>output_data_m</a></li>
+                  
+                
+                  
+                    <li><a href='./module/output_data_tests.html'>output_data_tests</a></li>
+                  
+                
+                  
+                    <li><a href="./lists/modules.html"><em>All modules&hellip;</em></a></li>
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+              </ul>
+          </div>
+          
+          
+		  <div class="col-xs-6 col-sm-3">
+              <h3>Procedures</h3>
+              <ul>
+                
+                  
+                    <li><a href='./interface/a.html'>a</a></li>
+                  
+                
+                  
+                    <li><a href='./interface/assign.html'>assign</a></li>
+                  
+                
+                  
+                    <li><a href='./interface/assign~2.html'>assign</a></li>
+                  
+                
+                  
+                    <li><a href='./interface/b.html'>b</a></li>
+                  
+                
+                  
+                    <li><a href='./interface/broadcast.html'>broadcast</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/broadcast_components.html'>broadcast_components</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/cf.html'>cf</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/cf~2.html'>cf</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/check_definition.html'>check_definition</a></li>
+                  
+                
+                  
+                    <li><a href='./proc/check_norm_of_difference.html'>check_norm_of_difference</a></li>
+                  
+                
+                  
+                    <li><a href="./lists/procedures.html"><em>All procedures&hellip;</em></a></li>
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+                  
+                
+              </ul>
+          </div>
+          
+          
+		  <div class="col-xs-6 col-sm-3">
+              <h3>Derived Types</h3>
+              <ul>
+                
+                  
+                    <li><a href='./type/detailed_output_t.html'>detailed_output_t</a></li>
+                  
+                
+                  
+                    <li><a href='./type/input_data_t.html'>input_data_t</a></li>
+                  
+                
+                  
+                    <li><a href='./type/material_content_t.html'>material_content_t</a></li>
+                  
+                
+                  
+                    <li><a href='./type/output_data_t.html'>output_data_t</a></li>
+                  
+                
+                  
+                    <li><a href='./type/random_samples_t.html'>random_samples_t</a></li>
+                  
+                
+              </ul>
+          </div>
+          
+      </div>
+
+    <hr>    
+    </div> <!-- /container -->
+    <footer>
+      <div class="container">
+      <div class="row">
+        <div class="col-xs-6 col-md-4"><p>&copy; 2021 
+                                          </p></div>
+        <div class="col-xs-6 col-md-4 col-md-push-4">
+          <p class="text-right">
+            Documentation generated by 
+            <a href="https://github.com/cmacmackin/ford">FORD</a>
+             on 2021-03-19 21:00  
+          </p>
+        </div>
+        <div class="col-xs-12 col-md-4 col-md-pull-4"><p class="text-center"> miniFAVOR was developed by </p></div>
+      </div>
+      <br>
+      </div> <!-- /container -->    
+    </footer>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+<!--
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+-->
+    <script src="./js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="./js/ie10-viewport-bug-workaround.js"></script>
+
+    <!-- MathJax JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        TeX: { extensions: ['AMSmath.js','AMSsymbols.js','noErrors.js','noUndefined.js'], equationNumbers: { autoNumber: 'AMS' } },
+        jax: ['input/TeX','input/MathML','output/HTML-CSS'],
+        extensions: ['tex2jax.js','mml2jax.js','MathMenu.js','MathZoom.js']
+      });
+    </script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    
+    <script src="./tipuesearch/tipuesearch_content.js"></script>
+    <script src="./tipuesearch/tipuesearch_set.js"></script>
+    <script src="./tipuesearch/tipuesearch.js"></script>
+    
+    
+  </body>
+</html>
