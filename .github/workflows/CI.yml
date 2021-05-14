@@ -43,16 +43,12 @@ jobs:
     - name: Build
       run: |
         source OpenCoarrays-2.9.2/prerequisites/installations/opencoarrays/2.9.2/setup.sh
-        mkdir build
-        cd build
-        FC=caf cmake ..
-        make -j $(nproc)
+        fpm build --compiler caf
 
     - name: Run tests
       run: |
         source OpenCoarrays-2.9.2/prerequisites/installations/opencoarrays/2.9.2/setup.sh
-        cd build
-        ctest --output-on-failure
+        fpm test --compiler caf --runner "cafrun -n 2" --target "*"
 
     - name: miniFAVOR Documenation
       run: |
