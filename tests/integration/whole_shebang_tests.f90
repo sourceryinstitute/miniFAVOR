@@ -20,7 +20,7 @@ contains
     integer, parameter :: input_file_reader=1
     integer i
 
-    if (this_image()==input_file_reader) call input_data%define("test.in")
+    if (this_image()==input_file_reader) call input_data%define("tests/integration/test.in")
     call input_data%broadcast(source_image = input_file_reader)
 
     associate(nsim => input_data%nsim())

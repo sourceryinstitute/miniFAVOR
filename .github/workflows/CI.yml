@@ -32,27 +32,24 @@ jobs:
         path: "OpenCoarrays-2.9.2/"
         key: ${{ steps.time.outputs.time }}
 
-    - name: Install Dependencies
+    - name: Install gfortran, OpenCoarrays, and fpm
       run: |
         sudo apt install -y gfortran-${GCC_V} wget python-dev python build-essential graphviz
         sudo update-alternatives --install /usr/bin/gfortran gfortran /usr/bin/gfortran-${GCC_V} 100
         if [ ! -d OpenCoarrays-2.9.2 ] ; then wget -P . https://github.com/sourceryinstitute/OpenCoarrays/releases/download/2.9.2/OpenCoarrays-2.9.2.tar.gz && tar -xf OpenCoarrays-2.9.2.tar.gz && cd OpenCoarrays-2.9.2 && TERM=xterm ./install.sh -y; fi
         wget -P . "https://bootstrap.pypa.io/get-pip.py" && sudo python get-pip.py && rm get-pip.py
         sudo pip install ford
+        wget https://github.com/fortran-lang/fpm/releases/download/v0.2.0/fpm-0.2.0-linux-x86_64 && sudo cp fpm-0.2.0-linux-x86_64 /usr/local/bin/fpm && sudo chmod a+x /usr/local/bin/fpm
 
     - name: Build
       run: |
         source OpenCoarrays-2.9.2/prerequisites/installations/opencoarrays/2.9.2/setup.sh
-        mkdir build
-        cd build
-        FC=caf cmake ..
-        make -j $(nproc)
+        fpm build --compiler caf
 
     - name: Run tests
       run: |
         source OpenCoarrays-2.9.2/prerequisites/installations/opencoarrays/2.9.2/setup.sh
-        cd build
-        ctest --output-on-failure
+        fpm test --compiler caf --runner "cafrun -n 2" --target "*"
 
     - name: miniFAVOR Documenation
       run: |

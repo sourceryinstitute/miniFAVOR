@@ -32,33 +32,30 @@ Earlier versions might work.
 
 Prerequisites
 -------------
+Below are the versions of each prerequsite currently employed in developing
+miniFAVOR:
+
 1. [`gfortran`] 10.2 for compiling Fortran 2018.
-2. [`cmake`] 3.16 for generating Makefiles or IDE project files.
+2. [`fpm`] 0.2.0 for building and testing miniFAVOR.
 3. [`ford`] 6 for building documentation.
 4. [OpenCoarrays] 2.9.2 for compiling and launching parallel executable programs.
 
-Cloning miniFAVOR
------------------
-To obtain miniFAVOR, execute the following command:
+Other versions might work as well.
 
+Cloning, building, and testing miniFAVOR
+----------------------------------------
+To obtain, build, and test miniFAVOR, execute the following command in a shell:
 ```
-git clone --recursive git@github.com:sourceryinstitute/miniFAVOR.git
+git clone git@github.com:sourceryinstitute/miniFAVOR.git
+fpm test --compiler caf --runner "cafrun -n 2" --target "*"
 ```
-where `--rercursive` ensures that miniFAVOR's prerequisite repositories
-are downloaded.
+whereupon `fpm` will recursively download and build each of the prerequisites'
+prerequisite(s) before building miniFAVOR and excecuting parallel unit and integration
+tests using two images in the above.  Please report any build errors or test failures by
+submitting a [new issue].
 
-Building, and testing miniFAVOR on Linux or macOS
--------------------------------------------------
-In a `bash` shell, enter the following commands:
-```
-mkdir -p miniFAVOR/build
-cd miniFAVOR/build
-export FC=caf
-cmake ..
-make
-ctest
-```
-Please report any test failures by submitting a [new issue].
+Documentation
+-------------
 
 The [developer documentation] is published via GitHub Pages.
 
@@ -66,6 +63,7 @@ The [developer documentation] is published via GitHub Pages.
 [`gfortran`]: https://gcc.gnu.org
 [`cmake`]: https://www.cmake.org
 [`ford`]: https://github.com/Fortran-FOSS-Programmers/ford
+[`fpm`]: https://github.com/fortran-lang/fpm
 [new issue]: https://github.com/everythingfunctional/miniFAVOR/issues/new
 [developer documentation]: https://sourceryinstitute.github.io/miniFAVOR/
 [OpenCoarrays]: https://github.com/sourceryinstitute/opencoarrays
